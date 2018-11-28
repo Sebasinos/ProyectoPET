@@ -1,5 +1,5 @@
 import math
-
+#Aqui hay que pedir los datos
 Act_ini = float(raw_input("Ingrese Actividad Inicial: "))
 tiempo = float(raw_input("Ingrese tiempo: "))
 des_fluor =float(109.771)
