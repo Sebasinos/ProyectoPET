@@ -3,11 +3,12 @@ Proyecto PETManager
 
 ## **Documentacion**
 ## **Archivo:**
-Codigo decaimiento.py
+decaimiento.py
 ## **Objetivo**: Realizar el calculo del decaimiento radiactivo de un radiofarmaco
 ## **Datos de Entrada:**
-*Requiere el valor numerico de Dosis inicial medida en milicuries(mCi) con dos decimales.(Ej: 180.39).
-*Requiere el valor entero de tiempo en Minutos (min.) que transcurre desde la actividad inicial a la hora de medida requerida  (Ej 55 ).
+*Requiere el valor numerico de Dosis inicial medida en milicuries (mCi) con dos decimales Ej 180.39
+*Requiere el valor entero de tiempo en Minutos (min) que transcurre desde la actividad inicial a la hora de medida requerida Ej 55
+
 ## **Datos de Salida:**
 *Valor de Decaimiento radiactivo de fluor en milicuries (mCi) de FDG en el periodo de tiempo establecido.
 
