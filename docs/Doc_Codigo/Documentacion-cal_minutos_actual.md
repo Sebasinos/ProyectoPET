@@ -12,12 +12,18 @@ cal_minutos_actual.py
 *Minutos en formato Int.
 
 ## **Variables:**
-*time_x = Tiempo inicial de medicion (Formato HH:MM)
+*time_x = Tiempo inicial de medicion (Formato HH:MM).
+
 *now = tiempo actual del sistema (Formato HH:MM).
+
 *start_dt = tiempo actual en formato estructura de tiempo (HH:MM).
-*end_dt= tiempo ingresada por usuario en formato estructura de tiempo (HH:MM)
-*diff = diferencia entre los tiempo con estructura de tiempo (Nota: Para obtener el resultado correcto es necesario trabajar los formatos de tiempo de python , pero para facilidad en el manejo de datos luego se transforma a str)
+
+*end_dt= tiempo ingresada por usuario en formato estructura de tiempo (HH:MM).
+
+*diff = diferencia entre los tiempo con estructura de tiempo (Nota: Para obtener el resultado correcto es necesario trabajar los formatos de tiempo de python , pero para facilidad en el manejo de datos luego se transforma a str).
+
 *minutos= convierte la diferencia obtenida en minutos, valor entero.
+
 
 ## **Observaciones**
 Este Modulo se provee los minutos para distintos moludos de calculos.
