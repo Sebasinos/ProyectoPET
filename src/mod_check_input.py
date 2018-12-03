@@ -51,5 +51,6 @@ def check_input_hora():
             return hour_min
         except ValueError:
             print ("Debe ingresar formato valido HH:MM ")
+            
 
 
