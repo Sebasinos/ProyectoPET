@@ -13,13 +13,13 @@ decaimiento.py
 *Valor de Decaimiento radiactivo de fluor en milicuries (mCi) de FDG en el periodo de tiempo establecido.
 
 ## **Variables:**
-*Act_ini = float / Actividad Inicial del Radiofarmaco.
+*dose_act = float / Actividad Inicial del Radiofarmaco. transforma a float valor ingresado
 
-*tiempo = float / Tiempo de decaimiento del Radiofarmaco.
+*minutos = float / Tiempo de decaimiento del Radiofarmaco.
 
 *des_fluor =float(109.771) / Valor fijo para Radifarmaco FLuor18- Constante de decaimiento propia del elemento.
 
-*Act_fin = float / Resultado - Actividad Final calculada.
+*act_fin = float / Resultado - Actividad Final calculada.
 
 
 ## **Formula**
