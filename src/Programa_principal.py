@@ -78,6 +78,14 @@ def cal_decay(dose_act,minut_decay):
     minutos=float(minut_decay)
     act_fin=dose_act*(math.exp(-(0.693*minutos/des_fluor)))
     return act_fin
+
+def dif_min_proy(time_1,time_2):
+    start_dt = dt.datetime.strptime(time_2, '%H:%M')
+    end_dt = dt.datetime.strptime(time_1, '%H:%M')
+    diff = (start_dt - end_dt)
+    minutos= int(diff.seconds/60)
+    print (minutos)
+    return minutos
     
     
 #------CONTROLLERS------#
@@ -101,13 +109,10 @@ def dose_now(lista):
     act_ini=dose_last(lista)
     time=time_last(lista)
     minutos=dif_min(time)
-
     dose_now=cal_decay(act_ini,minutos)
     dose_now=round(dose_now,3)
-
     return dose_now
             
-
 #FUNCION INGRESO DE DOSIS INICIAL
 def dose_inicio():
     dose=check_input_dose()
@@ -119,7 +124,17 @@ def dose_inicio():
 
 
 #FUNCION DE DOSIS PROYECTADA
-
+def dose_proy(lista):
+    hour_x=check_input_hora()
+    act_ini=dose_last(lista)
+    time=time_last(lista)
+    minutos=dif_min_proy(time,hour_x)
+    dose=cal_decay(act_ini,minutos)
+    dose=round(dose,3)
+    print ("la dosis proyectada para las",hour_x," es", dose, "mCi")
+    return dose
+    
+    
 
 
 def menu():
@@ -159,6 +174,8 @@ while opc != "s":
 	
     #MODULO DE DOSIS PROYECTADA
     if(opc == "2"):
+        dose_proy(lista)
+        
         print ("Regresando al Menu")
 
 
@@ -181,6 +198,3 @@ while opc != "s":
     #MODULO DE GENERACION DE REPORTE
     if(opc == "6"):
         print ("Regresando al Menu")
-    
-
-    
