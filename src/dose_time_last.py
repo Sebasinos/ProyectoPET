@@ -11,3 +11,10 @@ def time_last(lista):
     lista=lista[-1]
     time_last=lista[1]
     return time_last
+
+#FUNCION ultimo ml de la lista
+
+def ml_last(lista):
+    lista=lista[-1]
+    ml_last=lista[2]
+    return ml_last
