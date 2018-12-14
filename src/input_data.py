@@ -1,0 +1,17 @@
+#FUNCION INGRESO DE DATO ACTUALIZADO
+def input_data(lista):
+    act_dose=dose_last(lista)
+    act_ml=ml_last(lista)
+    act_hour=time_last(lista)
+    new_dose=check_input_dose()
+    new_hour=check_input_hora()
+    new_ml=check_input_ml()
+    minutos=dif_min_proy(act_hour,new_hour)
+    doserefresh=cal_decay(act_dose,minutos)
+    doserefresh=round(float(doserefresh)-float(new_dose),2)
+    mlrefresh= float(ml_last(lista)) - float(new_ml)
+    tupla=(new_dose,new_hour,new_ml)
+    lista2.append(tupla)
+    tupla_act=(str(doserefresh), new_hour, str(mlrefresh))
+    lista.append(tupla_act)
+    print ("Datos ingresados con exito")
