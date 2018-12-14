@@ -8,6 +8,9 @@ import datetime as dt
 #VARIABLES GLOBALES
 
 lista= []
+lista2=[]
+listadosis = []
+listafinal =[]
 
 #-------CHECK INPUTS---------#
 
@@ -104,6 +107,13 @@ def time_last(lista):
     time_last=lista[1]
     return time_last
 
+#FUNCION ultimo ml de la lista
+
+def ml_last(lista):
+    lista=lista[-1]
+    ml_last=lista[2]
+    return ml_last
+
 #FUNCION DOSIS REAL-TIME
 def dose_now(lista):
     act_ini=dose_last(lista)
@@ -134,6 +144,69 @@ def dose_proy(lista):
     print ("la dosis proyectada para las",hour_x," es", dose, "mCi")
     return dose
     
+#FUNCION CANTIDAD ML-DOSIS
+def dose_ml(lista):
+    dose_req=float(check_input_dose())
+    dose_act=float(dose_last(lista))
+    ml_act=float(ml_last(lista))
+    ml= (dose_req*ml_act)/dose_act
+    ml= round(ml,1)
+    print ("Los ml necesarios para tener", dose_req, "mCi, son: ", ml, "ml")
+
+#FUNCION INGRESO DE DATO ACTUALIZADO
+def input_data(lista):
+    act_dose=dose_last(lista)
+    act_ml=ml_last(lista)
+    act_hour=time_last(lista)
+    new_dose=check_input_dose()
+    new_hour=check_input_hora()
+    new_ml=check_input_ml()
+    minutos=dif_min_proy(act_hour,new_hour)
+    doserefresh=cal_decay(act_dose,minutos)
+    doserefresh=round(float(doserefresh)-float(new_dose),2)
+    mlrefresh= float(ml_last(lista)) - float(new_ml)
+    tupla=(new_dose,new_hour,new_ml)
+    lista2.append(tupla)
+    tupla_act=(str(doserefresh), new_hour, str(mlrefresh))
+    lista.append(tupla_act)
+    print ("Datos ingresados con exito")
+
+
+#FUNCION GENERAR INFORME
+
+def gen_info(lista2):
+    d=1
+    a=0
+    for i in lista2:
+        listadosis=[]
+        listadosis.append(str(d))
+        c=0
+        while c < 3:
+            listadosis.append(lista2[a][c])
+            c = c+1
+    
+        listafinal.append(listadosis)
+        a=a+1                      
+        d=d+1
+
+    print (listafinal)
+
+
+def crate_file(listafinal):
+    archivo="lista Pacientes Diario.csv"
+    csv=open(archivo,"w")
+    titulo= "Paciente,Dosis,Hora,mL\n"
+    csv.write(titulo)
+
+    s=0
+    for linea in listafinal:
+        pcte,dosis,hora,ml=listafinal[s][0],listafinal[s][1],listafinal[s][2],listafinal[s][3],
+        filas=pcte+","+dosis+","+hora+","+ml+"\n"
+        csv.write(filas)
+        s=s+1
+    csv.close() 
+
+
     
 
 
@@ -187,14 +260,18 @@ while opc != "s":
 
     #MODULO DE CALCULO ML
     if(opc == "4"):
+        ml=dose_ml(lista)
         print ("Regresando al Menu")
        
 	
     #MODULO DE INGRESO DATO ACTUALIZADO
     if(opc == "5"):
+        input_data(lista) 
         print ("Regresando al Menu")
   
 
     #MODULO DE GENERACION DE REPORTE
     if(opc == "6"):
+        gen_info(lista2)
+        crate_file(listafinal)
         print ("Regresando al Menu")

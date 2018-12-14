@@ -6,24 +6,21 @@ Proyecto PETManager
 Programa_principal.py
 ## **Objetivo**: Base de la aplicacion para realizar test de los modulos y funcionalidades.
 
-## **Funcionalidad Dose_now:**
-Funcion de dosis en tiempo real. 
-
 ## **Datos de Entrada:**
-*lista = Datos consistentes en tuplas que almacenan informacion de dosis, hora y ml)
+*Ingresador por el usuario en los distintos modulos
 
 ## **Datos de Salida:**
-*Activdad en tiempo real como valor float 
+*resultados de los distintos modulos
 
-## **Variables:**
-*act_ini= ultima dosis registrada en la lista de datos local (llama al metodo - dose_last(lista) dando como parametro la lista).
+## **Variables Globales:**
+*lista= Datos iniciales almacenados y los calculos realizados.
 
-*time = ultimo tiempo registrado de medicion de dosis (llama a metodo - time_last(lista) dando como parametro la lista).
+*lista2=Datos ingresados por los usuarios para cada paciente.
 
-*minutos= cantidad de minutos transcurridos entre la ultima dosis medida y el tiempo actual (llama al metodo dif_min(time) dando como parametro la variable time).
+*listadosis= lista para almacenar orden de datos ingresados por cada paciente
 
-*dose_now= dosis en tiempo real (llama al metodo cal_decay(act_ini,minutos) dando como parametro las variables act_ini y minutos), luego el resultado es un float que se redondea con 3 decimales.
+*listafinal= lista ordenada lista para ser exportada al archivo csv.
 
 
 ## **Observaciones**
-Este Modulo a traves de la funcion menu() entrega en pantalla la cantidad de actividad en tiempo real.
+A traves de la funcion menu() entrega en pantalla todas las funcionalidades propuestas para PET Manager.
