@@ -11,4 +11,5 @@ def crate_file(listafinal):
         filas=pcte+","+dosis+","+hora+","+ml+"\n"
         csv.write(filas)
         s=s+1
-    csv.close() 
+    csv.close()
+    print ("Reporte generado con Exito")
