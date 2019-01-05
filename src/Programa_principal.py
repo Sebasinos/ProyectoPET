@@ -11,6 +11,7 @@ lista= []
 lista2=[]
 listadosis = []
 listafinal =[]
+var=0
 
 #-------CHECK INPUTS---------#
 
@@ -18,35 +19,32 @@ listafinal =[]
 
 def check_input_dose():
     while True:
-        dosis_u = input("Ingrese Dosis con punto y solo 2 decimales")
+        dosis_u = input("Ingrese Dosis con PUNTO(.) y solo 2 decimales\n")
         try:
             dosis_u =float(dosis_u)
             dosis_u="%.*f" % (2, dosis_u)
-            print (dosis_u)
             return dosis_u
             
         except ValueError:
-            print ("Debe ingresar valores separador por PUNTO y solo dos decimales")
+            print ("Debe ingresar valores separador por PUNTO(.) y solo 2 decimales")
 
 def check_input_ml():
     while True:
-        ml_u = input("Ingrese cantidad de ml con punto y solo 2 decimales")
+        ml_u = input("Ingrese cantidad de ml con PUNTO(.) y solo 2 decimales\n")
         try:
             ml_u =float(ml_u)
             ml_u="%.*f" % (2, ml_u)
-            print (ml_u)
             return ml_u
             
         except ValueError:
-            print ("Debe ingresar valores separador por PUNTO y solo dos decimales si tiene.")
+            print ("Debe ingresar valores separador por PUNTO(.) y solo 2 decimales.")
 
 
 def check_input_time():
     while True:
-        time_u = input("Ingrese tiempo en minutos, ej 22 ")
+        time_u = input("Ingrese tiempo en minutos, ej 22 \n")
         try:
             time_u =int(time_u)
-            print (time_u)
             return time_u
             
         except ValueError:
@@ -54,12 +52,11 @@ def check_input_time():
 
 def check_input_hora():
     while True:
-        data = input("Ingrese hora en formato HH:MM")
+        data = input("Ingrese hora en formato HH:MM \n")
         try:
             time.strptime(data, "%H:%M")
             hour=time.strptime(data, "%H:%M")
             hour_min=time.strftime('%H:%M', hour)
-            print (hour_min)
             return hour_min
         except ValueError:
             print ("Debe ingresar formato valido HH:MM ")
@@ -87,7 +84,6 @@ def dif_min_proy(time_1,time_2):
     end_dt = dt.datetime.strptime(time_1, '%H:%M')
     diff = (start_dt - end_dt)
     minutos= int(diff.seconds/60)
-    print (minutos)
     return minutos
     
     
@@ -107,7 +103,7 @@ def time_last(lista):
     time_last=lista[1]
     return time_last
 
-#FUNCION ultimo ml de la lista
+#FUNCION ultimo tiempo de la lista
 
 def ml_last(lista):
     lista=lista[-1]
@@ -171,6 +167,23 @@ def input_data(lista):
     lista.append(tupla_act)
     print ("Datos ingresados con exito")
 
+def input_data_mod(dose,hour,ml):
+    act_dose=dose_last(lista)
+    act_ml=ml_last(lista)
+    act_hour=time_last(lista)
+    new_dose=dose
+    new_hour=hour
+    new_ml=ml
+    minutos=dif_min_proy(act_hour,new_hour)
+    doserefresh=cal_decay(act_dose,minutos)
+    doserefresh=round(float(doserefresh)-float(new_dose),2)
+    mlrefresh= float(ml_last(lista)) - float(new_ml)
+    tupla_act=(str(doserefresh), new_hour, str(mlrefresh))
+    lista.append(tupla_act)
+    print ("Datos ingresados con exito")
+    
+    
+
 
 #FUNCION GENERAR INFORME
 
@@ -189,8 +202,6 @@ def gen_info(lista2):
         a=a+1                      
         d=d+1
 
-    print (listafinal)
-
 
 def crate_file(listafinal):
     archivo="lista Pacientes Diario.csv"
@@ -204,25 +215,107 @@ def crate_file(listafinal):
         filas=pcte+","+dosis+","+hora+","+ml+"\n"
         csv.write(filas)
         s=s+1
-    csv.close() 
+    csv.close()
+    print ("Reporte generado con Exito")
 
+def mod_last_dat(lista2,lista):
+    if (lista2 == []):
+        print("No hay pacientes para modificar")
+
+    else:
+        opc=0
+        while opc != "s":
+            print("Ingese una opción valida")
+            menuPrincipal = menu_mod()
+            opc = opciones()
+            
+            if(opc == "1"):
+                dose=check_input_dose()
+                lis=list(lista2[-1])
+                lis[0]=dose
+                hour=lis[1]
+                ml=lis[2]
+                listanew=tuple(lis)
+                lista2.pop(-1)
+                lista2.append(listanew)
+                lista.pop(-1)
+                input_data_mod(dose,hour,ml)
+                print ("Regresando al Menú")
+
+            if(opc == "2"):
+                hour=check_input_hora()
+                lis=list(lista2[-1])
+                lis[1]=hour
+                dose=lis[0]
+                ml=lis[2]
+                listanew=tuple(lis)
+                lista2.pop(-1)
+                lista2.append(listanew)
+                lista.pop(-1)
+                input_data_mod(dose,hour,ml)
+                print ("Regresando al Menú")
+
+
+            if(opc == "3"):
+                ml=check_input_ml()
+                lis=list(lista2[-1])
+                lis[2]=ml
+                dose=lis[0]
+                hour=lis[1]
+                listanew=tuple(lis)
+                lista2.pop(-1)
+                lista2.append(listanew)
+                lista.pop(-1)
+                input_data_mod(dose,hour,ml)
+                print ("Regresando al Menú")
+        
+
+
+def menu_mod():
+    clean(var)
+    print("** Importante **")
+    print("Los datos modificados solo son aplicables al ULTIMO paciente ingresado")
+    print("Selecciona Opción:")
+    print("** ::::::::::::::::::::::::: **")
+    print("Modificar Dosis  :-> 1")
+    print("Modificar Hora   :-> 2")
+    print("Modificar mL     :-> 3")
+    print("Volver al menú   :-> s")
+    print("** ::::::::::::::::::::::::: **")
+
+    
+    
+
+
+def clean(var):
+    if os.name == "posix":
+        var = "clear"
+
+    elif os.name == "ce" or os.name == "nt" or os.name == "dos":
+        var = "cls"
+
+    os.system(var)
+    
+    
 
     
 
 
 def menu():
+    
 	#MENU DE OPCIONES
 	print("** ::::::::::::::::::::::::: **")
-	print(":: Seleccione una Opcion ::")
+	print(":: Seleccione una Opción ::")
 	print("** ::::::::::::::::::::::::: **")
 	print("-------------------------------")
-	print("| Ingresar Dosis Inicial   :->  1     |")
-	print("| Calcular Dosis Proyectada:->  2     |")
-	print("| Calcular Dosis Real-Time: ->  3     |")
-	print("| Calcular mL para X dosis: ->  4     |")
-	print("| Ingreso dato actualizado: ->  5     |") 
-	print("| Generar Reporte :         ->  6     |")
-	print("| Salir:                    ->  s     |")
+	print("| Ingresar Dosis Inicial   : ->  1     |")
+	print("| Calcular Dosis Proyectada: ->  2     |")
+	print("| Calcular Dosis Real-Time : ->  3     |")
+	print("| Calcular mL para X dosis : ->  4     |")
+	print("| Ingreso dato nuevo Pcte  : ->  5     |") 
+	print("| Generar Reporte          : ->  6     |")
+	print("| Modificar ultimo Pcte    : ->  7     |")
+	print("| Salir                    : ->  s     |")
 	print("-------------------------------")
 	print("** ::::::::::::::::::::::::: **") 
 	print("\n")
@@ -235,6 +328,7 @@ def opciones(opc=0):
 
 opc=0
 while opc != "s":
+    print("Ingrese una opción valida")
     menuPrincipal = menu()
     opc = opciones()
     #OPCIÓN DEL MENU
@@ -243,31 +337,45 @@ while opc != "s":
     if(opc == "1"):
         dose_inicio()
         print ("Regresando al Menu")
+        time.sleep(2)
+        clean(var)
     
 	
     #MODULO DE DOSIS PROYECTADA
     if(opc == "2"):
-        dose_proy(lista)
-        
+        dose_proy(lista) 
         print ("Regresando al Menu")
+        time.sleep(2)
+        clean(var)
 
 
     #MODULO DE DOSIS REAL-TIME
     if(opc == "3"):
         dose=dose_now(lista)
-        print ("la Dosis para este momento es;",dose," mCi")       
+        ml=ml_last(lista)
+        pctes=len(lista2)
+        print ("la Dosis actual es:",dose," mCi, en:",ml,"mL\nActualmente se han realizado",pctes,"pacientes")
+        
         print ("Regresando al Menu")
+        time.sleep(5)
+        clean(var)
+        
+        
 
     #MODULO DE CALCULO ML
     if(opc == "4"):
         ml=dose_ml(lista)
         print ("Regresando al Menu")
+        time.sleep(2)
+        clean(var)
        
 	
     #MODULO DE INGRESO DATO ACTUALIZADO
     if(opc == "5"):
         input_data(lista) 
         print ("Regresando al Menu")
+        time.sleep(2)
+        clean(var)
   
 
     #MODULO DE GENERACION DE REPORTE
@@ -275,3 +383,12 @@ while opc != "s":
         gen_info(lista2)
         crate_file(listafinal)
         print ("Regresando al Menu")
+        time.sleep(2)
+        clean(var)
+
+    #MODULO DE MODIFICACION
+    if(opc == "7"):
+        mod_last_dat(lista2,lista)
+        print ("Regresando al Menu")
+        time.sleep(2)
+        clean(var)

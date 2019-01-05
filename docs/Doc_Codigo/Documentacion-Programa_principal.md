@@ -21,6 +21,8 @@ Programa_principal.py
 
 *listafinal= lista ordenada lista para ser exportada al archivo csv.
 
+*var= almacena el tipo de SO ultilizado.
+
 
 ## **Observaciones**
-A traves de la funcion menu() entrega en pantalla todas las funcionalidades propuestas para PET Manager.
+A traves de la funcion menu() entrega en pantalla todas las funcionalidades propuestas para PET Manager.Ademas la funcion menu_mod() genera un menu dedicado a la modificacion de datos.
