@@ -143,7 +143,7 @@ def dose_proy(lista):
 #FUNCION CANTIDAD ML-DOSIS
 def dose_ml(lista):
     dose_req=float(check_input_dose())
-    dose_act=float(dose_last(lista))
+    dose_act=float(dose_now(lista))
     ml_act=float(ml_last(lista))
     ml= (dose_req*ml_act)/dose_act
     ml= round(ml,1)
@@ -227,8 +227,7 @@ def mod_last_dat(lista2,lista):
         while opc != "s":
             print("Ingese una opción valida")
             menuPrincipal = menu_mod()
-            opc = opciones()
-            
+            opc = opciones() 
             if(opc == "1"):
                 dose=check_input_dose()
                 lis=list(lista2[-1])
@@ -241,7 +240,6 @@ def mod_last_dat(lista2,lista):
                 lista.pop(-1)
                 input_data_mod(dose,hour,ml)
                 print ("Regresando al Menú")
-
             if(opc == "2"):
                 hour=check_input_hora()
                 lis=list(lista2[-1])
@@ -254,8 +252,6 @@ def mod_last_dat(lista2,lista):
                 lista.pop(-1)
                 input_data_mod(dose,hour,ml)
                 print ("Regresando al Menú")
-
-
             if(opc == "3"):
                 ml=check_input_ml()
                 lis=list(lista2[-1])
