@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 import os 
 import math
-import time
 import datetime as dt
+import time
 
 #VARIABLES GLOBALES
 
@@ -339,7 +339,9 @@ while opc != "s":
 	
     #MODULO DE DOSIS PROYECTADA
     if(opc == "2"):
-        dose_proy(lista) 
+        
+        dose_proy(lista)
+
         print ("Regresando al Menu")
         time.sleep(2)
         clean(var)
@@ -351,7 +353,6 @@ while opc != "s":
         ml=ml_last(lista)
         pctes=len(lista2)
         print ("la Dosis actual es:",dose," mCi, en:",ml,"mL\nActualmente se han realizado",pctes,"pacientes")
-        
         print ("Regresando al Menu")
         time.sleep(5)
         clean(var)
