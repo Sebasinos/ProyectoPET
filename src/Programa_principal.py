@@ -116,7 +116,8 @@ def dose_now(lista):
     time=time_last(lista)
     minutos=dif_min(time)
     dose_now=cal_decay(act_ini,minutos)
-    dose_now=round(dose_now,3)
+    dose_now= float(dose_now)-float((float(dose_now) * float(0.0063)))
+    dose_now=format(dose_now, '.2f')
     return dose_now
             
 #FUNCION INGRESO DE DOSIS INICIAL
@@ -136,7 +137,7 @@ def dose_proy(lista):
     time=time_last(lista)
     minutos=dif_min_proy(time,hour_x)
     dose=cal_decay(act_ini,minutos)
-    dose=round(dose,3)
+    dose=format(dose,'.3f')
     print ("la dosis proyectada para las",hour_x," es", dose, "mCi")
     return dose
     
@@ -146,7 +147,7 @@ def dose_ml(lista):
     dose_act=float(dose_now(lista))
     ml_act=float(ml_last(lista))
     ml= (dose_req*ml_act)/dose_act
-    ml= round(ml,1)
+    ml= format(ml,'.2f')
     print ("Los ml necesarios para tener", dose_req, "mCi, son: ", ml, "ml")
 
 #FUNCION INGRESO DE DATO ACTUALIZADO
@@ -159,8 +160,9 @@ def input_data(lista):
     new_ml=check_input_ml()
     minutos=dif_min_proy(act_hour,new_hour)
     doserefresh=cal_decay(act_dose,minutos)
-    doserefresh=round(float(doserefresh)-float(new_dose),2)
-    mlrefresh= float(ml_last(lista)) - float(new_ml)
+    doserefresh=format(float(doserefresh)-float(new_dose),'.3f')
+    doserefresh=float(doserefresh)-float((float(doserefresh) * float(0.0063)))
+    mlrefresh= format((float(ml_last(lista)) - float(new_ml)),'.2f')
     tupla=(new_dose,new_hour,new_ml)
     lista2.append(tupla)
     tupla_act=(str(doserefresh), new_hour, str(mlrefresh))
@@ -176,8 +178,8 @@ def input_data_mod(dose,hour,ml):
     new_ml=ml
     minutos=dif_min_proy(act_hour,new_hour)
     doserefresh=cal_decay(act_dose,minutos)
-    doserefresh=round(float(doserefresh)-float(new_dose),2)
-    mlrefresh= float(ml_last(lista)) - float(new_ml)
+    doserefresh=format(float(doserefresh)-float(new_dose),'.3f')
+    mlrefresh= format((float(ml_last(lista)) - float(new_ml)),'.2f')
     tupla_act=(str(doserefresh), new_hour, str(mlrefresh))
     lista.append(tupla_act)
     print ("Datos ingresados con exito")
@@ -333,7 +335,7 @@ while opc != "s":
     if(opc == "1"):
         dose_inicio()
         print ("Regresando al Menu")
-        time.sleep(2)
+        time.sleep(5)
         clean(var)
     
 	
@@ -343,7 +345,7 @@ while opc != "s":
         dose_proy(lista)
 
         print ("Regresando al Menu")
-        time.sleep(2)
+        time.sleep(8)
         clean(var)
 
 
@@ -354,7 +356,7 @@ while opc != "s":
         pctes=len(lista2)
         print ("la Dosis actual es:",dose," mCi, en:",ml,"mL\nActualmente se han realizado",pctes,"pacientes")
         print ("Regresando al Menu")
-        time.sleep(5)
+        time.sleep(8)
         clean(var)
         
         
@@ -363,7 +365,7 @@ while opc != "s":
     if(opc == "4"):
         ml=dose_ml(lista)
         print ("Regresando al Menu")
-        time.sleep(2)
+        time.sleep(5)
         clean(var)
        
 	
@@ -371,7 +373,7 @@ while opc != "s":
     if(opc == "5"):
         input_data(lista) 
         print ("Regresando al Menu")
-        time.sleep(2)
+        time.sleep(5)
         clean(var)
   
 
@@ -380,12 +382,12 @@ while opc != "s":
         gen_info(lista2)
         crate_file(listafinal)
         print ("Regresando al Menu")
-        time.sleep(2)
+        time.sleep(5)
         clean(var)
 
     #MODULO DE MODIFICACION
     if(opc == "7"):
         mod_last_dat(lista2,lista)
         print ("Regresando al Menu")
-        time.sleep(2)
+        time.sleep(5)
         clean(var)
