@@ -5,7 +5,7 @@ import math
 import datetime as dt
 import time
 
-#VARIABLES GLOBALES
+#VARIABLES GLOBALEs
 
 lista= []
 lista2=[]
