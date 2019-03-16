@@ -3,40 +3,23 @@
 import smtplib 
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText 
-from email.mime.multipart import MIMEMultipart 
-from email import encoders
-import time
+from email.mime.base import MIMEBase
 
-def load_file(file, file_name):
-    read_file = open(file,'rb')
-    attach = MIMEBase('multipart', 'encrypted')
-    attach.set_payload(read_file.read()) 
-    read_file.close()  
-    encoders.encode_base64(attach) 
-    attach.add_header('Content-Disposition', 'attachment', filename=file_name)
-    return attach
+email_user = 'petmanagerclr@gmail.com'
+email_send = 'petmanagerclr@gmail.com'
+subject= 'Phyton!'
 
-def sendemail(addr_to_mail, ruta):
-    smtp_server = 'smtp.gmail.com:587'
-    smtp_user   = 'petmanagerclr@gmail.com'
-    smtp_pass   = 'petman2019'
-    fecha=str(time.strftime("%d-%m-%y"))
-    email = MIMEMultipart() 
-    email['To'] = addr_to_mail
-    email['From'] = 'petmanagerclr@gmail.com'
-    email['Subject'] = 'Reporte PETManager'
-    email.attach(MIMEText('<p style="color:red;" >Envio Archivo Reporte PET Manager</p>','html'))
-    email.attach(load_file(ruta,fecha+'.csv'))
-    smtp = smtplib.SMTP(smtp_server)
-    smtp.starttls()
-    smtp.login(smtp_user,smtp_pass)
-    smtp.sendmail(addr_from_mail, addr_to_mail, email.as_string())
-    smtp.quit()
-    print ("E-mail enviado!")
+msg = MIMEMultipart()
+msg ['From'] = email_user
+msg ['To'] = email_user
+msg ['Subject'] = subject
 
-def sendmailini():
-    mail = input("Ingrese mail destino")
-    ruta = input("Ingrese ruta del archivo Ej: C:/Users//Desktop/archivo.csv")
-    sendemail(mail,ruta)
+body = 'Hola , este es un mail de phyton'
+msg.attach(MIMEText(body,'plain'))
+text = msg.as_string()
+server = smtplib.SMTP('smtp.gmail.com',587)
+server.starttls()
+server.login(email_user,'petman20191')
 
-sendmailini()
+server.sendmail(email_user,email_send,text)
+server.quit()
