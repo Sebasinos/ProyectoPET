@@ -151,6 +151,7 @@ def dose_ml(lista):
     print ("Los ml necesarios para tener", dose_req, "mCi, son: ", ml, "ml")
 
 #FUNCION INGRESO DE DATO ACTUALIZADO
+fac_cor_fluor= float(0.0063)
 def input_data(lista):
     act_dose=dose_last(lista)
     act_ml=ml_last(lista)
@@ -161,7 +162,7 @@ def input_data(lista):
     minutos=dif_min_proy(act_hour,new_hour)
     doserefresh=cal_decay(act_dose,minutos)
     doserefresh=format(float(doserefresh)-float(new_dose),'.3f')
-    doserefresh=float(doserefresh)-float((float(doserefresh) * float(0.0063)))
+    doserefresh=float(doserefresh)-float((float(doserefresh) *fac_cor_fluor))
     mlrefresh= format((float(ml_last(lista)) - float(new_ml)),'.2f')
     tupla=(new_dose,new_hour,new_ml)
     lista2.append(tupla)
