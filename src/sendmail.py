@@ -2,7 +2,9 @@
 
 import smtplib 
 from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText 
+from email.mime.text import MIMEText
+
+
 
 email_user = 'petmanagerclr@gmail.com'
 email_send = 'petmanagerclr@gmail.com'
