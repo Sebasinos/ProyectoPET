@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="borde">
+    <file>borde.png</file>
+  </qresource>
+</RCC>
