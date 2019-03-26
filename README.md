@@ -4,7 +4,7 @@ _Aplicacion de escritorio capaz de gestionar de manera optimizada la dosis de fa
 
 ### Pre-requisitos 📋
 
-_Necesario para su ejecucion MINIMO  Windows 7 32 bits, con menos de 500 MB de memoria y 4 GB de disco._
+_Necesario para su ejecucion como minimo Windows 7 32 bits, con 500 MB de memoria y 4 GB de disco._
 
 ### Instalación 🔧
 
