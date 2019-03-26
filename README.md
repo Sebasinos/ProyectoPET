@@ -18,8 +18,6 @@ Dar siguiente y aceptar licencia de uso hasta finalizar
 
 _Pruebas de Funcionalidad realizadas en entorno de trabajo y documentadas en Git_
 
-### Analice las pruebas end-to-end 🔩
-
 ### Test de codificación ⌨️
 
 _Pruebas en curso_
