@@ -6,11 +6,11 @@ _Pet Manager es un Proyecto realizado para el Ramo Proyecto de Titulo de la Univ
 
 _Carrera de Ingeniería en Computación e Informática - Advance 2019_
 
-### Pre-requisitos 📋
+## Pre-requisitos 📋
 
 _Necesario para su instalación como minimo Windows 7 32 bits, con 500 MB de memoria y 4 GB de almacenamiento en el disco._
 
-### Instalación 🔧
+## Instalación 🔧
 
 _Se puede ejecutar Scrip con Ide-consola Phyton 3.7 - Codigo Principal [PetManager](https://github.com/Sebasinos/ProyectoPET/blob/master/src/Programa_principal.py)_
 
@@ -19,9 +19,9 @@ _Se puede Instalar ultima versión lanzada - Instalador windows [PetManager](htt
 Seguir Instrucciones de instalador (aceptar licencia de uso).
 ```
 
-## Modulos ⚙️
+## Documentación ⚙️
 
-_Mudulos relacionados para el funcionamiento de PETManager:_
+_Mudulos de PETManager:_
 
 [Modulo Calculadora de Decaimiento Radiactivo](https://github.com/Sebasinos/ProyectoPET/blob/master/docs/Doc_Codigo/Documentacion-cal_decay.md)
 
@@ -49,10 +49,12 @@ _Mudulos relacionados para el funcionamiento de PETManager:_
 
 [Modulo Modificar ultimo datos](https://github.com/Sebasinos/ProyectoPET/blob/master/docs/Doc_Codigo/Documentacion-mod_last_dat.md)
 
+_Ejemplos Funcionamiento:_
 
-### Test  ⌨️
 
-_Documentacion Pruebas de:_`
+
+
+_Pruebas :_
 
 [Aceptacion](https://github.com/Sebasinos/ProyectoPET/tree/master/docs/Test/Acceptance)
 
