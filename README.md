@@ -53,6 +53,24 @@ _Ejemplos Funcionamiento:_
 
 ![](ejemplo.gif)
 
+* Cadena de opciones: 
+
+* Ingreso de Dosis Inicial ->  Seleccionar opcion numerica 1 /enter -> Ingresar Dosis en mCi /enter -> Ingresar Hora en formato HH:mm / enter -> Ingresar cantidad en formato mL/ enter -> msg de "Datos ingresados con Exito".
+
+* Solicitar Dosis Proyectada ->  Seleccionar opcion numerica 2 /enter ->  Ingresar Hora en formato HH:mm a proyectar / enter -> msg de Respuesta con dosis proyectada.
+
+* Solicitar Dosis en tiempo real ->  Seleccionar opcion numerica 3 /enter -> msg de Respuesta con dosis en tiempo real.
+
+* Solicitar calculo de mL para x Dosis ->  Seleccionar opcion numerica 4 /enter ->  Ingresar Dosis en mCi /enter -> msg de Respuesta con  los mL necesarios para tal dosis.
+
+* Ingreso nuevo dato de Paciente ->  Seleccionar opcion numerica 5 /enter -> Ingresar Dosis en mCi /enter -> Ingresar Hora en formato HH:mm / enter -> Ingresar cantidad en formato mL/ enter -> msg de "Datos ingresados con Exito".
+
+* Genera Reporte ->  Seleccionar opcion numerica 6 /enter ->  msg de "Reporte generado con Exito". - Aqui se genera un archivo csv con la informacion contenida hasta el momento junto donde se encuentra el archivo Scrip o instalacion.
+
+* Solicitar Modificar ultimo dato Paciente ->  Seleccionar opcion numerica 7 /enter ->  Ingresa a nuevo menu de modificaciones -> Aqui se tienen 3 opciones . opc 1 Modifica Dosis - opc 2 Modifica hora - Opc 3 Modifica mL. para volver al menu principal seleccionar opcion s/enter.
+
+* Solicitar Salir del programa ->  Seleccionar opcion caracter s/enter ->  Aplicacion se cierra.
+
 
 _Pruebas :_
 
