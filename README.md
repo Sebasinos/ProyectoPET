@@ -4,7 +4,7 @@ _Aplicacion capaz de gestionar de manera optimizada la dosis de farmacos Radiact
 
 _Pet Manager es un Proyecto realizado para el Ramo Proyecto de Titulo de la Universidad Andres Bello_
 
-_Carrera de Ingenieróa y Computación e Informática - Advance 2019_
+_Carrera de Ingeniería y Computación e Informática - Advance 2019_
 
 ### Pre-requisitos 📋
 
