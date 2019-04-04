@@ -1,32 +1,67 @@
 # Proyecto PET Manager
 
-_Aplicacion de escritorio capaz de gestionar de manera optimizada la dosis de farmacos Radiactivos en CLR_
+_Aplicacion capaz de gestionar de manera optimizada la dosis de farmacos Radiactivos en CLR_
+
+_Pet Manager es un Proyecto realizado para el Ramo Proyecto de Titulo de la Universidad Andres Bello_
+
+_Carrera de Ingenieróa y Computación e Informática - Advance 2019_
 
 ### Pre-requisitos 📋
 
-_Necesario para su ejecucion como minimo Windows 7 32 bits, con 500 MB de memoria y 4 GB de disco._
+_Necesario para su instalacion como minimo Windows 7 32 bits, con 500 MB de memoria y 4 GB de disco._
 
 ### Instalación 🔧
 
-_Seguir Indicaciones del asistente de instalacion de PetManager.exe_
+_Se puede ejecutar Scrip con Ide-consola Phyton 3.7 - Codigo Principal [PetManager](https://github.com/Sebasinos/ProyectoPET/blob/master/src/Programa_principal.py)_
 
+_Se puede Instalar ultima version lanzada - Instalador windows [PetManager](https://github.com/Sebasinos/ProyectoPET/releases/tag/V0.4)_
 ```
-Dar siguiente y aceptar licencia de uso hasta finalizar
+Seguir Instrucciones de instalador (aceptar licencia de uso).
 ```
 
-## Ejecutando las pruebas ⚙️
+## Modulos ⚙️
 
-_Pruebas de Funcionalidad realizadas en entorno de trabajo y documentadas en Git_
+_Mudulos relacionados para el funcionamiento de PETManager:_
 
-### Test de codificación ⌨️
+[Modulo Calculadora de Decaimiento Radiactivo](https://github.com/Sebasinos/ProyectoPET/blob/master/docs/Doc_Codigo/Documentacion-cal_decay.md)
 
-_Pruebas en curso_
+[Modulo Diferencia entre dos horas](https://github.com/Sebasinos/ProyectoPET/blob/master/docs/Doc_Codigo/Documentacion-cal_dif_min_proy.md)
+
+[Modulo Limpiar Consola](https://github.com/Sebasinos/ProyectoPET/blob/master/docs/Doc_Codigo/Documentacion-clean.md)
+
+[Modulo Crear un archivo csv](https://github.com/Sebasinos/ProyectoPET/blob/master/docs/Doc_Codigo/Documentacion-create_file.md)
+
+[Modulo Diferencia entre hora actual y Especifica](https://github.com/Sebasinos/ProyectoPET/blob/master/docs/Doc_Codigo/Documentacion-dif_min.md)
+
+[Modulo Ingreso valores](https://github.com/Sebasinos/ProyectoPET/blob/master/docs/Doc_Codigo/Documentacion-dose_inicio.md)
+
+[Modulo Calculo de mL para x Dosis](https://github.com/Sebasinos/ProyectoPET/blob/master/docs/Doc_Codigo/Documentacion-dose_ml.md)
+
+[Modulo Calculo Dosis en tiempo Real](https://github.com/Sebasinos/ProyectoPET/blob/master/docs/Doc_Codigo/Documentacion-dose_now.md)
+
+[Modulo Tomar ultimos Valores](https://github.com/Sebasinos/ProyectoPET/blob/master/docs/Doc_Codigo/Documentacion-dose_time_ml_last.md)
+
+[Modulo Crear lista ordenada de datos](https://github.com/Sebasinos/ProyectoPET/blob/master/docs/Doc_Codigo/Documentacion-gen_info.md)
+
+[Modulo Ingreso de nuevos datos](https://github.com/Sebasinos/ProyectoPET/blob/master/docs/Doc_Codigo/Documentacion-input_data.md)
+
+[Modulo Chequeo de datos](https://github.com/Sebasinos/ProyectoPET/blob/master/docs/Doc_Codigo/Documentacion-mod_check_input.md)
+
+[Modulo Modificar ultimo datos](https://github.com/Sebasinos/ProyectoPET/blob/master/docs/Doc_Codigo/Documentacion-mod_last_dat.md)
+
+
+### Test  ⌨️
+
+_Documentacion Pruebas de:_`
+
+[Aceptacion](https://github.com/Sebasinos/ProyectoPET/tree/master/docs/Test/Acceptance)
+
+[Desarrolador](https://github.com/Sebasinos/ProyectoPET/tree/master/docs/Test/Developer)
+
+[Sistema](https://github.com/Sebasinos/ProyectoPET/tree/master/docs/Test/System)
+
 
 ## Construido con 🛠️
-
-_Hadware_
-
-* MacBook Pro (Retina, 13-inch, Late 2013) Procesador 2,4 GHz Intel Core i5 - Memoria - 8 GB 1600 MHz DDR3 -S.O -OS X El capitan Version 10.11.6 (15G22010) 
 
 _Software_
 
