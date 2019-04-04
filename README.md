@@ -4,17 +4,17 @@ _Aplicacion capaz de gestionar de manera optimizada la dosis de farmacos Radiact
 
 _Pet Manager es un Proyecto realizado para el Ramo Proyecto de Titulo de la Universidad Andres Bello_
 
-_Carrera de Ingeniería em Computación e Informática - Advance 2019_
+_Carrera de Ingeniería en Computación e Informática - Advance 2019_
 
 ### Pre-requisitos 📋
 
-_Necesario para su instalacion como minimo Windows 7 32 bits, con 500 MB de memoria y 4 GB de disco._
+_Necesario para su instalación como minimo Windows 7 32 bits, con 500 MB de memoria y 4 GB de almacenamiento en el disco._
 
 ### Instalación 🔧
 
 _Se puede ejecutar Scrip con Ide-consola Phyton 3.7 - Codigo Principal [PetManager](https://github.com/Sebasinos/ProyectoPET/blob/master/src/Programa_principal.py)_
 
-_Se puede Instalar ultima version lanzada - Instalador windows [PetManager](https://github.com/Sebasinos/ProyectoPET/releases/tag/V0.4)_
+_Se puede Instalar ultima versión lanzada - Instalador windows [PetManager](https://github.com/Sebasinos/ProyectoPET/releases/tag/V0.4)_
 ```
 Seguir Instrucciones de instalador (aceptar licencia de uso).
 ```
@@ -61,7 +61,7 @@ _Documentacion Pruebas de:_`
 [Sistema](https://github.com/Sebasinos/ProyectoPET/tree/master/docs/Test/System)
 
 
-## Construido con 🛠️
+## Desarollo 🛠️
 
 _Software_
 
