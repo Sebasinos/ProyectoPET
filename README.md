@@ -51,7 +51,7 @@ _Mudulos de PETManager:_
 
 _Ejemplos Funcionamiento:_
 
-
+![](ejemplo.gif)
 
 
 _Pruebas :_
