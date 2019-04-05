@@ -21,7 +21,9 @@ Seguir Instrucciones de instalador (aceptar licencia de uso).
 
 ## Documentación ⚙️
 
-_Mudulos de PETManager:_
+### Módulos
+
+El proyecto PETManager está compuesto por los siguientes módulos funcionales
 
 [Modulo Calculadora de Decaimiento Radiactivo](https://github.com/Sebasinos/ProyectoPET/blob/master/docs/Doc_Codigo/Documentacion-cal_decay.md)
 
@@ -49,11 +51,9 @@ _Mudulos de PETManager:_
 
 [Modulo Modificar ultimo datos](https://github.com/Sebasinos/ProyectoPET/blob/master/docs/Doc_Codigo/Documentacion-mod_last_dat.md)
 
-_Ejemplos Funcionamiento:_
+### Ejemplo
 
-![](ejemplo.gif)
-
-* Cadena de opciones: 
+Ejemplo de un caso de uso: 
 
 * Ingreso de Dosis Inicial ->  Seleccionar opcion numerica 1 /enter -> Ingresar Dosis en mCi /enter -> Ingresar Hora en formato HH:mm / enter -> Ingresar cantidad en formato mL/ enter -> msg de "Datos ingresados con Exito".
 
@@ -71,8 +71,11 @@ _Ejemplos Funcionamiento:_
 
 * Solicitar Salir del programa ->  Seleccionar opcion caracter s/enter ->  Aplicacion se cierra.
 
+![](ejemplo.gif)
 
-_Pruebas :_
+### Pruebas
+
+Registro de pruebas de cada iteración.
 
 [Aceptacion](https://github.com/Sebasinos/ProyectoPET/tree/master/docs/Test/Acceptance)
 
@@ -81,11 +84,16 @@ _Pruebas :_
 [Sistema](https://github.com/Sebasinos/ProyectoPET/tree/master/docs/Test/System)
 
 
-## Desarollo 🛠️
+## Herramientas de desarollo 🛠️
 
 _Software_
 
-* Ambiente de desarrollo integrado/Compilador IDLE Python - Lenguaje de programación Python 3.7.1 -Gestor Grafico Qt5 Designer-Sw Para metodología -Trello -Repositorio del proyecto -Github-Sw creador instalador-Inno Setup
+  - Ambiente de desarrollo integrado/Compilador IDLE Python
+  - Lenguaje de programación Python 3.7.1
+  - Gestor Grafico Qt5 Designer
+  - Gestor de metodología Trello
+  - Repositorio del proyecto Github
+  - Sw creador instalador-Inno Setup
 
 
 ## Autores ✒️
@@ -93,4 +101,4 @@ _Software_
 _Agradecimientos_
 
 * **Sebastian Inostroza** - *Trabajo Inicial* 
-* **Patricio Castillo** - *Profesor Guia* 
+* **Patricio Castillo** - *Profesor Guía* 
