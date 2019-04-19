@@ -5,9 +5,8 @@ import time
 
 #--Calculator time--#
 
-def dif_min_now(time_x):
+def dif_min(time_x):
     now= dt.datetime.now()
-    time_x=time_x.replace(year=now.year, month=now.month, day=now.day)
     diff = (now - time_x)
     minutos= int(diff.seconds/60)
     return minutos
@@ -27,3 +26,23 @@ def cal_decay(dose_act,minut_decay,Rf):
     minutos=float(minut_decay)
     act_fin=dose_act*(math.exp(-(0.693*minutos/des_fluor)))
     return act_fin
+
+
+def dose_last(lista):
+    lista=lista[-1]
+    dose_last=lista[0]
+    return dose_last
+
+#FUNCION ultimo tiempo de la lista
+
+def time_last(lista):
+    lista=lista[-1]
+    time_last=lista[1]
+    return time_last
+
+#FUNCION ultimo tiempo de la lista
+
+def ml_last(lista):
+    lista=lista[-1]
+    ml_last=lista[2]
+    return ml_last

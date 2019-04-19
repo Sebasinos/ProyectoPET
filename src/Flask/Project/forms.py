@@ -18,21 +18,35 @@ def check_decimal(form, field):
 
 
 class CommentForm(Form):
-	dosis= FloatField('Dosis en mCi:',
+	dosis= FloatField('Dosis Inicial en mCi:',
 		[ 
 			validators.Required(message = 'Ingresar dosis Valida.'),
 			check_decimal
 
 		]
 		) 
-	Hora= DateTimeField('Hora de medicion',format ="%H:%M", validators=[validators.Required(message='Ingresar Formato HH:MM')])
+	Hora= DateTimeField('Hora de medicion Inicial',format ="%H:%M", validators=[validators.Required(message='Ingresar Formato HH:MM')])
 
 
-	ml= FloatField('Milimetros(mL)',
+	ml= FloatField('Milimetros(mL) Totales',
 		[ 
 			validators.Required(message = 'Ingresar mL Valido.'),
 			check_decimal
 
 		]
 		) 
+
+class CommentForm2(Form):
+	Hora= DateTimeField('Hora de Proyección',format ="%H:%M", validators=[validators.Required(message='Ingresar Formato HH:MM')])
+
+
+class CommentForm3(Form):
+	dosis= FloatField('Dosis Requerida en mCi:',
+		[ 
+			validators.Required(message = 'Ingresar dosis Valida.'),
+			check_decimal
+
+		]
+		) 
+
 

@@ -6,15 +6,56 @@ import time
 from flask import Flask
 from flask import render_template
 from flask import request
+from flask import flash
 
 import forms
+
 lista=[]
 #-----Calculator-------#
 Rf=float(109.771)
 fac_cor_fluor= float(0.0063)
 
-app = Flask(__name__)
-#FUNCION ultima dosis de la lista
+def dose_now(lista):
+    act_ini=dose_last(lista)
+    time=time_last(lista)
+    minutos=dif_min(time)
+    dose_now=cal_decay(act_ini,minutos,Rf)
+    dose_now= float(dose_now)-float((float(dose_now) * float(0.0063)))
+    dose_now=format(dose_now, '.2f')
+    print (dose_now)
+    return dose_now
+
+
+def dif_min(time_x):
+    now= dt.datetime.now()
+    diff = (now - time_x)
+    minutos= int(diff.seconds/60)
+    return minutos
+
+def dif_min_proy(time_last,time_proy):
+    start_dt = time_proy
+    end_dt = time_last
+    diff = (start_dt - end_dt)
+    minutos= int(diff.seconds/60)
+    return minutos
+
+#--Calculator Dose--#
+
+def cal_decay(dose_act,minut_decay,Rf):
+    dose_act=float(dose_act)
+    minutos=float(minut_decay)
+    act_fin=dose_act*(math.exp(-(0.693*minutos/Rf)))
+    return act_fin
+
+def real_time(lista, Rf):
+	act_ini=dose_last(lista)
+	time=time_last(lista)
+	minutos=dif_min(time)
+	dose_now=cal_decay(act_ini,minutos,Rf)
+	dose_now= float(dose_now)-float((float(dose_now) * fac_cor_fluor))
+	dose_now=format(dose_now, '.2f')
+	dose = dose_now
+
 
 def dose_last(lista):
     lista=lista[-1]
@@ -35,28 +76,9 @@ def ml_last(lista):
     ml_last=lista[2]
     return ml_last
 
-def cal_decay(dose_act,minut_decay,Rf):
-    dose_act=float(dose_act)
-    minutos=float(minut_decay)
-    act_fin=dose_act*(math.exp(-(0.693*minutos/Rf)))
-    return act_fin
+app = Flask(__name__)
+#FUNCION ultima dosis de la lista
 
-
-def dif_min_proy(time_last,time_proy):
-    start_dt = time_proy
-    end_dt = time_last
-    diff = (start_dt - end_dt)
-    minutos= int(diff.seconds/60)
-    return minutos
-
-
-def dif_min(time_x):
-    now= dt.datetime.now()
-    diff = (now - time_x)
-    minutos= int(diff.seconds/60)
-    print (now)
-    print (time_x)
-    return minutos
 
 @app.route('/')
 def index():
@@ -98,7 +120,38 @@ def real_time():
 
 	return render_template('real_time.html',dose=dose)
 
+@app.route('/dose_proy' , methods = ['GET','POST'])
+def dose_proy():
+	hour=""
+	dose=""
+	comment_form2 = forms.CommentForm2(request.form)
+	if request.method == 'POST' and comment_form2.validate():
+		hour=comment_form2.Hora.data
+		now= dt.datetime.now()
+		hour=hour.replace(year=now.year, month=now.month, day=now.day)
+		print(hour)
+		act_ini=dose_last(lista)
+		time=time_last(lista)
+		minutos=dif_min_proy(time,hour)
+		dose=cal_decay(act_ini,minutos,Rf)
+		dose=format(dose,'.3f')
+		hour = hour.strftime("%H:%M:")
 
+	return render_template('dose_proy.html', form= comment_form2, hour=hour, dose=dose)
+
+@app.route('/dose_ml' , methods = ['GET','POST'])
+def dose_ml():
+	dose_req=""
+	ml=""
+	comment_form3 = forms.CommentForm3(request.form)
+	if request.method == 'POST' and comment_form3.validate():
+		dose_req=comment_form3.dosis.data
+		dose_act=float(dose_now(lista))
+		ml_act=float(ml_last(lista))
+		ml= (dose_req*ml_act)/dose_act
+		ml= format(ml,'.2f')
+
+	return render_template('dose_ml.html', form= comment_form3, ml=ml, dose=dose_req)
 
 
 if __name__ == '__main__':
