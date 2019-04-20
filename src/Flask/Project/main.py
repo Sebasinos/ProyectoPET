@@ -77,7 +77,7 @@ def ml_last(lista):
     return ml_last
 
 app = Flask(__name__)
-#FUNCION ultima dosis de la lista
+app.config['SECRET_KEY']= 'PETMANUNAB'
 
 
 @app.route('/')
