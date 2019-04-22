@@ -6,7 +6,9 @@ import time
 from flask import Flask
 from flask import render_template
 from flask import request
-from flask import flash
+from flask import flash, make_response
+from flask_wtf import CsrfProtect
+
 
 import forms
 
@@ -78,11 +80,26 @@ def ml_last(lista):
 
 app = Flask(__name__)
 app.config['SECRET_KEY']= 'PETMANUNAB'
+csrf= CsrfProtect(app)
 
+
+@app.route('/login' , methods = ['GET','POST'])
+def login():
+	Login_Form = forms.LoginForm()
+	return render_template('login.html', form = Login_Form)
+
+@app.route('/cookie')
+def cookie():
+	response= make_response(render_template('cookie.html'))
+	response.set_cookie('custome_cookie', 'seba')
+	return response
 
 @app.route('/')
 def index():
-	return render_template('index.html')
+	custome_cookie=request.cookies.get('custome_cookie',)
+	print (custome_cookie)
+	title= 'Index'
+	return render_template('index.html', title=title)
 
 @app.route('/dosis_ini' , methods = ['GET','POST'])
 def dosis_ini():

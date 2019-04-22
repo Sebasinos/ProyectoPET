@@ -11,32 +11,25 @@
 				<br>
 				<br>
 
-				<form name="sentMessage" id="contactForm" method="POST">
-					<div class="row control-group">
-						<div class="form-group col-xs-12 floating-label-form-group controls"
-						>
-								{{ render_field(form.dosis, class='form-control') }}
-								<p class="help-block tect-danger"></p>
-						</div>
-						
-					</div>
+				<form id="LoginForm" method="POST">
+
+					<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 
 					<div class="row control-group">
 						<div class="form-group col-xs-12 floating-label-form-group controls"
 						>
-								{{ render_field(form.Hora, class='form-control') }}
+								{{ render_field(form.username, class='LoginForm') }}
 								<p class="help-block tect-danger"></p>
-						</div>
-						
-					</div>		
-					
+						</div>	
+					</div>	
+
 					<div class="row control-group">
 						<div class="form-group col-xs-12 floating-label-form-group controls"
 						>
-								{{ render_field(form.ml, class='form-control' ) }}
+								{{ render_field(form.password, class='LoginForm') }}
 								<p class="help-block tect-danger"></p>
-						</div>
-					</div>
+						</div>	
+					</div>			
 
 					<br>
 					<div id="success"></div>
@@ -47,7 +40,7 @@
 						
 					</div>
 				</form>
-			</div>	
+			</div>
 		</div>
 	</div>
 {% endblock %}

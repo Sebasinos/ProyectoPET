@@ -3,10 +3,14 @@ import math
 import datetime as dt
 import time
 from wtforms import Form
-from wtforms import StringField, TextField, FloatField, DateTimeField
+from wtforms import StringField, TextField, FloatField, DateTimeField, PasswordField, HiddenField
 from wtforms.fields.html5 import EmailField
 
 from wtforms import validators
+
+def length_honeypot(form, field):
+	if len(field.data) >0:
+		raise validators.ValidationError('El campo debe estar vacio.')
 
 
 def check_decimal(form, field):
@@ -48,5 +52,15 @@ class CommentForm3(Form):
 
 		]
 		) 
+
+class LoginForm(Form):
+	username= StringField('Username',
+		[
+			validators.Required(message= 'El Username es Requerido.'),
+			validators.length(min=3, max =20, message='Ingrese un Username valido.'),
+
+		])
+	password = PasswordField('Password', [validators.Required(message='El password es Requerido'),
+		])
 
 
