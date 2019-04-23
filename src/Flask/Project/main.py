@@ -6,11 +6,12 @@ import time
 from flask import Flask
 from flask import render_template
 from flask import request
-from flask import flash, make_response
+from flask import flash, make_response, session
+from flask import redirect, url_for
 from flask_wtf import CsrfProtect
-
-
 import forms
+import json
+
 
 lista=[]
 #-----Calculator-------#
@@ -82,11 +83,31 @@ app = Flask(__name__)
 app.config['SECRET_KEY']= 'PETMANUNAB'
 csrf= CsrfProtect(app)
 
+@app.errorhandler(404)
+def page_not_found(e):
+	return render_template('404.html'), 404
+
 
 @app.route('/login' , methods = ['GET','POST'])
 def login():
-	Login_Form = forms.LoginForm()
+	Login_Form = forms.LoginForm(request.form)
+	if request.method == 'POST' and Login_Form.validate():
+		username= Login_Form.username.data
+		success_message = 'Bienvenido {}'.format(username)
+		flash(success_message)
+
+		session['username'] = Login_Form.username.data
+
+
 	return render_template('login.html', form = Login_Form)
+
+@app.route('/ajax_login',  methods = ['POST'])
+def ajax_login():
+	print (request.form)
+	username= request.form['username']
+	response= { 'status': 200, 'username': username, 'id': 1 }
+	return json.dumps(response)
+	
 
 @app.route('/cookie')
 def cookie():
@@ -96,10 +117,19 @@ def cookie():
 
 @app.route('/')
 def index():
-	custome_cookie=request.cookies.get('custome_cookie',)
-	print (custome_cookie)
+	if 'username' in session:
+		username = session['username']
+		print (username)
+
 	title= 'Index'
 	return render_template('index.html', title=title)
+
+
+@app.route('/logout')
+def logout():
+	if 'username' in session:
+		session.pop('username')
+	return redirect (url_for('login'))
 
 @app.route('/dosis_ini' , methods = ['GET','POST'])
 def dosis_ini():
@@ -119,6 +149,8 @@ def dosis_ini():
 		print(tupla)
 		min= dif_min(hour)
 		print (min)
+		success_message= 'Datos Ingresados con Exito!.'
+		flash(success_message)
 
 
 	title = "PET Manager"

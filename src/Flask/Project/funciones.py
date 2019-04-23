@@ -22,10 +22,18 @@ def dif_min_proy(time_last,time_proy):
 
 def cal_decay(dose_act,minut_decay,Rf):
     dose_act=float(dose_act)
-    des_fluor =float(109.771)
     minutos=float(minut_decay)
-    act_fin=dose_act*(math.exp(-(0.693*minutos/des_fluor)))
+    act_fin=dose_act*(math.exp(-(0.693*minutos/Rf)))
     return act_fin
+
+def real_time(lista, Rf):
+	act_ini=dose_last(lista)
+	time=time_last(lista)
+	minutos=dif_min(time)
+	dose_now=cal_decay(act_ini,minutos,Rf)
+	dose_now= float(dose_now)-float((float(dose_now) * fac_cor_fluor))
+	dose_now=format(dose_now, '.2f')
+	dose = dose_now
 
 
 def dose_last(lista):
