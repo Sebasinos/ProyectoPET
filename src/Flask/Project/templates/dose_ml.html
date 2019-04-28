@@ -3,7 +3,6 @@
 {% block title %} {{ title }} {% endblock %}
 
 {% block content %}
-<center>
 	{% from "_macro.html" import render_field %}
 	<div class="container">
 		<div class="row">
@@ -12,7 +11,8 @@
 				<br>
 				<br>
 
-				<form name="sentMessage" id="contactForm" method="POST">
+				<form name="sentMessage" id="dose_ml" method="POST">
+					<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 					<div class="row control-group">
 						<div class="form-group col-xs-12 floating-label-form-group controls"
 						>
@@ -33,7 +33,7 @@
 			</div>
 		</div>
 	</div>
-
+<center>
 	<h4>Los mL necesarios para tener {{dose}} mCi</h4>
 	<h1> son : {{ ml }}</h1>
 </center>

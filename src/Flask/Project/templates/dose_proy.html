@@ -3,7 +3,6 @@
 {% block title %} {{ title }} {% endblock %}
 
 {% block content %}
-<center>
 	{% from "_macro.html" import render_field %}
 	<div class="container">
 		<div class="row">
@@ -12,7 +11,8 @@
 				<br>
 				<br>
 
-				<form name="sentMessage" id="contactForm" method="POST">
+				<form name="sentMessage" id="dose_proy" method="POST">
+					<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 					<div class="row control-group">
 						<div class="form-group col-xs-12 floating-label-form-group controls"
 						>
@@ -24,17 +24,16 @@
 					<br>
 					<div id="success"></div>
 					<div class="row"></div>
-					<center>
-							<div class="form-group col-xs-12">
+						<div class="form-group col-xs-12">
 							<button type="submit" class="btn btn-warning">Ingresar</button>
 						</div>
-					</center>
+						
 					</div>
 				</form>
 			</div>
 		</div>
 	</div>
-
+<center>
 	<h4>Dosis proyectada para las {{hour}}</h4>
 	<h1> {{ dose }} mCi</h1>
 </center>

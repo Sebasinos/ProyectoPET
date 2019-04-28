@@ -11,6 +11,7 @@ from flask import redirect, url_for
 from flask_wtf import CsrfProtect
 import forms
 import json
+from config import DevelopmentConfig
 
 
 lista=[]
@@ -80,8 +81,8 @@ def ml_last(lista):
     return ml_last
 
 app = Flask(__name__)
-app.config['SECRET_KEY']= 'PETMANUNAB'
-csrf= CsrfProtect(app)
+app.config.from_object(DevelopmentConfig)
+csrf= CsrfProtect()
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -103,6 +104,13 @@ def login():
 
 @app.route('/ajax_login',  methods = ['POST'])
 def ajax_login():
+	print (request.form)
+	username= request.form['username']
+	response= { 'status': 200, 'username': username, 'id': 1 }
+	return json.dumps(response)
+
+@app.route('/ajax_dose_ini',  methods = ['POST'])
+def ajax_dose_ini():
 	print (request.form)
 	username= request.form['username']
 	response= { 'status': 200, 'username': username, 'id': 1 }
@@ -204,4 +212,5 @@ def dose_ml():
 
 
 if __name__ == '__main__':
-	app.run(debug=True, port= 8000)
+	csrf.init_app(app)
+	app.run(port= 8000)
