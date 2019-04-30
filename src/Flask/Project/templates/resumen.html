@@ -1,0 +1,21 @@
+{% extends 'base/base.html'%}
+
+{% block title %} {{ title }} {% endblock %}
+
+{% block content %}
+	{% if listadosis %}
+			<br>
+			<br>
+			{% for item in listadosis %}
+			<br>
+				<div class="p-3 mb-2 bg-warning text-dark"><h5>- Paciente {{item[0]}} </h5></div>
+				<br>
+				<p><a class="text-white"><li> Dosis:  {{item[1]}}</li></a></p>
+				<p><a class="text-white"><li> Hora:  {{item[2]}}</li></a></p>
+				<p><a class="text-white"><li> mL   :  {{item[3]}}</li></a></p>
+			{% endfor %}
+
+	{% endif %}
+	<br>
+	<br>
+{% endblock %}

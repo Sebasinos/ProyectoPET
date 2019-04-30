@@ -11,10 +11,19 @@ from flask import redirect, url_for
 from flask_wtf import CsrfProtect
 import forms
 import json
+
 from config import DevelopmentConfig
+from models import db
+from models import User 
+
 
 
 lista=[]
+lista2=[]
+lista3=[]
+listadosis = []
+listafinal =[]
+var=0
 #-----Calculator-------#
 Rf=float(109.771)
 fac_cor_fluor= float(0.0063)
@@ -80,6 +89,43 @@ def ml_last(lista):
     ml_last=lista[2]
     return ml_last
 
+#FUNCION INGRESO DE DATO ACTUALIZADO
+def input_data(lista,new_dose,new_hour,new_ml):
+    act_dose=dose_last(lista)
+    act_ml=ml_last(lista)
+    act_hour=time_last(lista)
+    new_dose=new_dose
+    new_hour=new_hour
+    new_ml=new_ml
+    minutos=dif_min_proy(act_hour,new_hour)
+    doserefresh=cal_decay(act_dose,minutos,Rf)
+    doserefresh=format(float(doserefresh)-float(new_dose),'.3f')
+    doserefresh=float(doserefresh)-float((float(doserefresh) *fac_cor_fluor))
+    mlrefresh= format((float(ml_last(lista)) - float(new_ml)),'.2f')
+    tupla=(new_dose,new_hour,new_ml)
+    lista2.append(tupla)
+    tupla_act=(str(doserefresh), new_hour, str(mlrefresh))
+    lista.append(tupla_act)
+    hour = new_hour.strftime("%H:%M")
+    tupla1=(new_dose,hour,new_ml)
+    lista3.append(tupla1)
+    print ("Datos ingresados con exito")
+
+def input_data_mod(dose,hour,ml):
+    act_dose=dose_last(lista)
+    act_ml=ml_last(lista)
+    act_hour=time_last(lista)
+    new_dose=dose
+    new_hour=hour
+    new_ml=ml
+    minutos=dif_min_proy(act_hour,new_hour)
+    doserefresh=cal_decay(act_dose,minutos)
+    doserefresh=format(float(doserefresh)-float(new_dose),'.3f')
+    mlrefresh= format((float(ml_last(lista)) - float(new_ml)),'.2f')
+    tupla_act=(str(doserefresh), new_hour, str(mlrefresh))
+    lista.append(tupla_act)
+    print ("Datos ingresados con exito")
+
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
 csrf= CsrfProtect()
@@ -91,22 +137,43 @@ def page_not_found(e):
 
 @app.route('/login' , methods = ['GET','POST'])
 def login():
-	Login_Form = forms.LoginForm(request.form)
-	if request.method == 'POST' and Login_Form.validate():
-		username= Login_Form.username.data
-		success_message = 'Bienvenido {}'.format(username)
-		flash(success_message)
+	login_form = forms.LoginForm(request.form)
+	if request.method == 'POST' and login_form.validate():
+		username= login_form.username.data
+		password= login_form.password.data
 
-		session['username'] = Login_Form.username.data
+		user= User.query.filter_by(username = username).first()
+		if user is not None and user.verify_password(password):
+			if username == 'sinostroza':
+				username1= 'TM Sebastian Inostroza'
+			elif username == 'gvera':
+				username1= 'TM Gonzalo Vera'
+			elif username == 'ddaza':
+				username1= 'TM Daniela Daza'
+			elif username == 'jpereza':
+				username1= 'TM Jose Perez'	
+
+			success_message = 'Bienvenido {}'.format(username1)
+			flash(success_message, 'success')
+			session['username'] = username
+			return redirect( url_for('dosis_ini'))
+
+		else:
+			error_message = 'Usuario o Contraseña no Validos.'
+			flash(error_message, 'danger')
 
 
-	return render_template('login.html', form = Login_Form)
+		session['username'] = login_form.username.data
+
+
+	return render_template('login.html', form = login_form)
 
 @app.route('/ajax_login',  methods = ['POST'])
 def ajax_login():
 	print (request.form)
 	username= request.form['username']
-	response= { 'status': 200, 'username': username, 'id': 1 }
+	password = request.form['password']
+	response= { 'username': username, 'password': password }
 	return json.dumps(response)
 
 @app.route('/ajax_dose_ini',  methods = ['POST'])
@@ -128,89 +195,221 @@ def index():
 	if 'username' in session:
 		username = session['username']
 		print (username)
+		success_message = 'Ya estas con una sesion activa'	
+		flash(success_message, 'info')
 
-	title= 'Index'
-	return render_template('index.html', title=title)
+		return redirect( url_for('dosis_ini'))
+	else:
+		success_message = 'Debes iniciar Sesion'	
+		flash(success_message, 'warning')
+		return redirect( url_for('login'))
+
+@app.route('/create', methods = ['GET','POST'])
+def create():
+	create_form = forms.CreateForm(request.form)
+	if request.method == 'POST' and create_form.validate():
+		user= User( create_form.username.data,
+				    create_form.password.data )
+
+
+		db.session.add(user)
+		db.session.commit()
+
+		success_message = 'Usuario Registrado correctamente en la Base de datos'	
+		flash(success_message, 'success')
+
+	return render_template('create.html', form = create_form)
 
 
 @app.route('/logout')
 def logout():
 	if 'username' in session:
 		session.pop('username')
-	return redirect (url_for('login'))
+		success_message= 'Sesion cerrada con Exito!.'
+		flash(success_message, 'success')
+		return redirect (url_for('login'))
+	else:
+		success_message= 'Debes iniciar Sesion antes de cerrarla.'
+		flash(success_message, 'warning')
+		return redirect (url_for('login'))
 
 @app.route('/dosis_ini' , methods = ['GET','POST'])
 def dosis_ini():
-	comment_form = forms.CommentForm(request.form)
+	if 'username' in session:
+		comment_form = forms.CommentForm(request.form)
 
-	if request.method == 'POST' and comment_form.validate():
-		print (comment_form.dosis.data)
-		print (comment_form.Hora.data)
-		print (comment_form.ml.data)
-		dose=comment_form.dosis.data
-		hour=comment_form.Hora.data
-		ml=comment_form.ml.data
-		now= dt.datetime.now()
-		hour=hour.replace(year=now.year, month=now.month, day=now.day)
-		tupla=(dose,hour,ml)
-		lista.append(tupla)
-		print(tupla)
-		min= dif_min(hour)
-		print (min)
-		success_message= 'Datos Ingresados con Exito!.'
-		flash(success_message)
+		if request.method == 'POST' and comment_form.validate():
+			print (comment_form.dosis.data)
+			print (comment_form.Hora.data)
+			print (comment_form.ml.data)
+			dose=comment_form.dosis.data
+			hour=comment_form.Hora.data
+			ml=comment_form.ml.data
+			now= dt.datetime.now()
+			hour=hour.replace(year=now.year, month=now.month, day=now.day)
+			tupla=(dose,hour,ml)
+			lista.append(tupla)
+			print(tupla)
+			min= dif_min(hour)
+			print (min)
+			success_message= 'Datos Ingresados con Exito!.'
+			flash(success_message, 'success')
 
 
-	title = "PET Manager"
-	return render_template('dosis_ini.html', title=title, form = comment_form)
+		title = "PET Manager"
+		return render_template('dosis_ini.html', title=title, form = comment_form)
+	else:
+		success_message= 'Debes iniciar Sesion.'
+		flash(success_message, 'warning')
+		return redirect (url_for('login'))
+
+
+@app.route('/dosis_new' , methods = ['GET','POST'])
+def dosis_new():
+	if 'username' in session:
+		if lista == []:
+			success_message= 'No se han ingresado Datos iniciales!.'
+			flash(success_message, 'danger')
+			
+			return redirect( url_for('dosis_ini'))
+		else:
+			comment_form = forms.CommentFormnew(request.form)
+
+			if request.method == 'POST' and comment_form.validate():
+				print (comment_form.dosis.data)
+				print (comment_form.Hora.data)
+				print (comment_form.ml.data)
+				dose=comment_form.dosis.data
+				hour=comment_form.Hora.data
+				ml=comment_form.ml.data
+				now= dt.datetime.now()
+				hour=hour.replace(year=now.year, month=now.month, day=now.day)
+				input_data(lista,dose,hour,ml)
+
+				success_message= 'Datos Ingresados con Exito!.'
+				flash(success_message, 'success')
+
+
+			title = "PET Manager"
+			return render_template('dosis_new.html', title=title, form = comment_form)
+	else:
+		success_message= 'Debes iniciar Sesion.'
+		flash(success_message, 'warning')
+		return redirect (url_for('login'))		
 
 @app.route('/real_time')
 def real_time():
-	act_ini=dose_last(lista)
-	time=time_last(lista)
-	minutos=dif_min(time)
-	dose_now=cal_decay(act_ini,minutos,Rf)
-	dose_now= float(dose_now)-float((float(dose_now) * fac_cor_fluor))
-	dose_now=format(dose_now, '.2f')
-	print (dose_now)
-	dose = dose_now
+	if 'username' in session:
+		comment_form = forms.CommentForm(request.form)
+		if lista == []:
+			success_message= 'No se han ingresado Datos iniciales!.'
+			flash(success_message, 'danger')
 
-	return render_template('real_time.html',dose=dose)
+			return redirect( url_for('dosis_ini'))
+		else:
+			act_ini=dose_last(lista)
+			time=time_last(lista)
+			minutos=dif_min(time)
+			dose_now=cal_decay(act_ini,minutos,Rf)
+			dose_now= float(dose_now)-float((float(dose_now) * fac_cor_fluor))
+			dose_now=format(dose_now, '.2f')
+			print (dose_now)
+			dose = dose_now
+			mlrest=ml_last(lista)
+			pctes=len(lista2)
+
+
+
+			return render_template('real_time.html',dose=dose, mlrest=mlrest,pctes=pctes)
+	else:
+		success_message= 'Debes iniciar Sesion.'
+		flash(success_message, 'warning')
+		return redirect (url_for('login'))
+
+
+
+@app.route('/resumen')
+def resumen():
+	listafinal=[]
+	d=1
+	a=0
+	for i in lista3:
+		listadosis=[]
+		listadosis.append(str(d))
+		c=0
+		while c < 3:
+			listadosis.append(lista3[a][c])
+			c = c+1
+
+		listafinal.append(listadosis)
+		a=a+1                      
+		d=d+1
+
+	print(listafinal)
+
+	return render_template('resumen.html',listadosis=listafinal)
 
 @app.route('/dose_proy' , methods = ['GET','POST'])
 def dose_proy():
-	hour=""
-	dose=""
-	comment_form2 = forms.CommentForm2(request.form)
-	if request.method == 'POST' and comment_form2.validate():
-		hour=comment_form2.Hora.data
-		now= dt.datetime.now()
-		hour=hour.replace(year=now.year, month=now.month, day=now.day)
-		print(hour)
-		act_ini=dose_last(lista)
-		time=time_last(lista)
-		minutos=dif_min_proy(time,hour)
-		dose=cal_decay(act_ini,minutos,Rf)
-		dose=format(dose,'.3f')
-		hour = hour.strftime("%H:%M:")
+	if 'username' in session:
+		if lista == []:
+			success_message= 'No se han ingresado Datos iniciales!.'
+			flash(success_message, 'danger')
+			
+			return redirect( url_for('dosis_ini'))
+		else:
+			hour=""
+			dose=""
+			comment_form2 = forms.CommentForm2(request.form)
+			if request.method == 'POST' and comment_form2.validate():
+				hour=comment_form2.Hora.data
+				now= dt.datetime.now()
+				hour=hour.replace(year=now.year, month=now.month, day=now.day)
+				print(hour)
+				act_ini=dose_last(lista)
+				time=time_last(lista)
+				minutos=dif_min_proy(time,hour)
+				dose=cal_decay(act_ini,minutos,Rf)
+				dose=format(dose,'.3f')
+				hour = hour.strftime("%H:%M")
 
-	return render_template('dose_proy.html', form= comment_form2, hour=hour, dose=dose)
+			return render_template('dose_proy.html', form= comment_form2, hour=hour, dose=dose)
+	else:
+		success_message= 'Debes iniciar Sesion.'
+		flash(success_message, 'warning')
+		return redirect (url_for('login'))
 
 @app.route('/dose_ml' , methods = ['GET','POST'])
 def dose_ml():
-	dose_req=""
-	ml=""
-	comment_form3 = forms.CommentForm3(request.form)
-	if request.method == 'POST' and comment_form3.validate():
-		dose_req=comment_form3.dosis.data
-		dose_act=float(dose_now(lista))
-		ml_act=float(ml_last(lista))
-		ml= (dose_req*ml_act)/dose_act
-		ml= format(ml,'.2f')
+	if 'username' in session:
+		if lista == []:
+			success_message= 'No se han ingresado Datos iniciales!.'
+			flash(success_message, 'danger')
+			
+			return redirect( url_for('dosis_ini'))
+		else:
+			dose_req=""
+			ml=""
+			comment_form3 = forms.CommentForm3(request.form)
+			if request.method == 'POST' and comment_form3.validate():
+				dose_req=comment_form3.dosis.data
+				dose_act=float(dose_now(lista))
+				ml_act=float(ml_last(lista))
+				ml= (dose_req*ml_act)/dose_act
+				ml= format(ml,'.2f')
 
-	return render_template('dose_ml.html', form= comment_form3, ml=ml, dose=dose_req)
+			return render_template('dose_ml.html', form= comment_form3, ml=ml, dose=dose_req)
+	else:
+		success_message= 'Debes iniciar Sesion.'
+		flash(success_message, 'warning')
+		return redirect (url_for('login'))
 
 
 if __name__ == '__main__':
 	csrf.init_app(app)
+	db.init_app(app)
+	
+	with app.app_context():
+		db.create_all()
+
 	app.run(port= 8000)
