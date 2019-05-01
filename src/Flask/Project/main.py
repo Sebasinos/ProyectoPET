@@ -405,8 +405,11 @@ def envio():
 			with app.open_resource(os.path.join("data",fecha+'-DosisPET.csv')) as DosisPET:
 				msg.attach(fecha+'-DosisPET.csv', fecha+'-DosisPET/csv', DosisPET.read())
 			mail.send(msg)
-			
+			success_message= 'Mail enviado con exito.'
+			flash(success_message, 'success')
+			return redirect (url_for('envio'))
 
+			
 		return render_template('envio.html', form= comment_formmail)
 
 @app.route('/dose_proy' , methods = ['GET','POST'])
