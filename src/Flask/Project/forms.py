@@ -64,6 +64,9 @@ class CommentForm2(Form):
 	Hora= DateTimeField('Hora de Proyección',format ="%H:%M", validators=[validators.Required(message='Ingresar Formato HH:MM')])
 
 
+class CommentFormmail(Form):
+	mail= EmailField('Ingrese Mail de destino', validators=[validators.Required(message='Ingresar e-Mail Valido')])
+
 class CommentForm3(Form):
 	dosis= FloatField('Dosis Requerida en mCi:',
 		[ 

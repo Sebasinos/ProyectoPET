@@ -1,4 +1,6 @@
 import os 
+import os.path
+import csv
 import math
 import datetime as dt
 from datetime import timedelta
@@ -15,6 +17,9 @@ import json
 from config import DevelopmentConfig
 from models import db
 from models import User 
+
+from flask_mail import Mail
+from flask_mail import Message
 
 
 
@@ -129,6 +134,8 @@ def input_data_mod(dose,hour,ml):
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
 csrf= CsrfProtect()
+mail = Mail()
+
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -238,26 +245,32 @@ def dosis_ini():
 	if 'username' in session:
 		comment_form = forms.CommentForm(request.form)
 
-		if request.method == 'POST' and comment_form.validate():
-			print (comment_form.dosis.data)
-			print (comment_form.Hora.data)
-			print (comment_form.ml.data)
-			dose=comment_form.dosis.data
-			hour=comment_form.Hora.data
-			ml=comment_form.ml.data
-			now= dt.datetime.now()
-			hour=hour.replace(year=now.year, month=now.month, day=now.day)
-			tupla=(dose,hour,ml)
-			lista.append(tupla)
-			print(tupla)
-			min= dif_min(hour)
-			print (min)
-			success_message= 'Datos Ingresados con Exito!.'
-			flash(success_message, 'success')
+		if lista == []:
+			if request.method == 'POST' and comment_form.validate():
+				print (comment_form.dosis.data)
+				print (comment_form.Hora.data)
+				print (comment_form.ml.data)
+				dose=comment_form.dosis.data
+				hour=comment_form.Hora.data
+				ml=comment_form.ml.data
+				now= dt.datetime.now()
+				hour=hour.replace(year=now.year, month=now.month, day=now.day)
+				tupla=(dose,hour,ml)
+				lista.append(tupla)
+				print(tupla)
+				min= dif_min(hour)
+				print (min)
+				success_message= 'Datos Ingresados con Exito!'
+				flash(success_message, 'success')
 
 
-		title = "PET Manager"
-		return render_template('dosis_ini.html', title=title, form = comment_form)
+			title = "PET Manager"
+			return render_template('dosis_ini.html', title=title, form = comment_form)
+		else: 
+			success_message= 'Ya existen datos Iniciales'
+			flash(success_message, 'warning')
+			return redirect (url_for('resumen'))
+
 	else:
 		success_message= 'Debes iniciar Sesion.'
 		flash(success_message, 'warning')
@@ -349,6 +362,53 @@ def resumen():
 
 	return render_template('resumen.html',listadosis=listafinal)
 
+@app.route('/envio', methods = ['GET','POST'])
+def envio():
+	if 'username' in session:
+		listafinal=[]
+		d=1
+		a=0
+		for i in lista3:
+			listadosis=[]
+			listadosis.append(str(d))
+			c=0
+			while c < 3:
+				listadosis.append(lista3[a][c])
+				c = c+1
+			listafinal.append(listadosis)
+			a=a+1
+			d=d+1
+
+	
+		now= dt.datetime.now()
+		hour=now.replace(year=now.year, month=now.month, day=now.day)
+		fecha= hour.strftime("%Y-%m-%d")
+		archivo=os.path.abspath( os.path.join("data",fecha+'-DosisPET.csv'))
+		csv=open(archivo,'w')
+		titulo="Paciente,Dosis,Hora,mL\n"
+		csv.write(titulo)
+		print (listafinal)
+		s=0
+		for linea in listafinal:
+			pcte,dosis,hora,ml=str(listafinal[s][0]),str(listafinal[s][1]),str(listafinal[s][2]),str(listafinal[s][3]),
+			filas=pcte+","+dosis+","+hora+","+ml+"\n"
+			csv.write(filas)
+			s=s+1
+		csv.close()
+
+		comment_formmail = forms.CommentFormmail(request.form)
+		if request.method == 'POST' and comment_formmail.validate():
+			maildest=comment_formmail.mail.data
+			msg= Message('Envio de Jornada PET', sender = app.config['MAIL_USERNAME'],
+												recipients = [maildest] )
+			msg.html = '<b> Se adjunta la lista de Jornada PET Clinica Reñaca</b><br></br>'
+			with app.open_resource(os.path.join("data",fecha+'-DosisPET.csv')) as DosisPET:
+				msg.attach(fecha+'-DosisPET.csv', fecha+'-DosisPET/csv', DosisPET.read())
+			mail.send(msg)
+			
+
+		return render_template('envio.html', form= comment_formmail)
+
 @app.route('/dose_proy' , methods = ['GET','POST'])
 def dose_proy():
 	if 'username' in session:
@@ -408,6 +468,8 @@ def dose_ml():
 if __name__ == '__main__':
 	csrf.init_app(app)
 	db.init_app(app)
+	mail.init_app(app)
+
 	
 	with app.app_context():
 		db.create_all()
