@@ -13,14 +13,11 @@ from flask import redirect, url_for
 from flask_wtf import CsrfProtect
 import forms
 import json
-
 from config import DevelopmentConfig
 from models import db
 from models import User 
-
 from flask_mail import Mail
 from flask_mail import Message
-
 
 
 lista=[]
