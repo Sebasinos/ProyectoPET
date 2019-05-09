@@ -160,11 +160,13 @@ def login():
 			success_message = 'Bienvenido {}'.format(username1)
 			flash(success_message, 'success')
 			session['username'] = username
-			return redirect( url_for('dosis_ini'))
+			return redirect( url_for('index2'))
 
 		else:
 			error_message = 'Usuario o Contraseña no Validos.'
 			flash(error_message, 'danger')
+
+			return redirect( url_for('login'))
 
 
 		session['username'] = login_form.username.data
@@ -202,11 +204,50 @@ def index():
 		success_message = 'Ya estas con una sesion activa'	
 		flash(success_message, 'info')
 
-		return redirect( url_for('dosis_ini'))
+		return render_template('index.html')
 	else:
-		success_message = 'Debes iniciar Sesion'	
-		flash(success_message, 'warning')
-		return redirect( url_for('login'))
+
+		return render_template('index.html')
+
+@app.route('/index2', methods = ['GET','POST'])
+def index2():
+	if 'username' in session:
+		username = session['username']
+
+		return render_template('index2.html')
+	else:
+		
+		return render_template('index.html')
+
+@app.route('/reinicio')
+def reinicio():
+	global lista
+	if lista == []:
+		success_message= 'No se han ingresado Datos iniciales!.'
+		flash(success_message, 'danger')
+		return redirect( url_for('dosis_ini'))
+		
+	else:
+		return render_template('reinicio.html')
+
+@app.route('/reinicio2')
+def reinicio2():
+	global lista
+	global lista2
+	global lista3
+	global listadosis
+	global listafinal
+
+	lista=[]
+	lista2=[]
+	lista3=[]
+	listadosis = []
+	listafinal =[]
+	success_message= 'Valores reiniciados.'
+	flash(success_message, 'success')
+
+	return redirect( url_for('dosis_ini'))	
+	
 
 @app.route('/create', methods = ['GET','POST'])
 def create():
@@ -231,11 +272,11 @@ def logout():
 		session.pop('username')
 		success_message= 'Sesion cerrada con Exito!.'
 		flash(success_message, 'success')
-		return redirect (url_for('login'))
+		return redirect (url_for('index'))
 	else:
 		success_message= 'Debes iniciar Sesion antes de cerrarla.'
 		flash(success_message, 'warning')
-		return redirect (url_for('login'))
+		return redirect (url_for('index'))
 
 @app.route('/dosis_ini' , methods = ['GET','POST'])
 def dosis_ini():
@@ -362,49 +403,55 @@ def resumen():
 @app.route('/envio', methods = ['GET','POST'])
 def envio():
 	if 'username' in session:
-		listafinal=[]
-		d=1
-		a=0
-		for i in lista3:
-			listadosis=[]
-			listadosis.append(str(d))
-			c=0
-			while c < 3:
-				listadosis.append(lista3[a][c])
-				c = c+1
-			listafinal.append(listadosis)
-			a=a+1
-			d=d+1
+		if lista == []:
+			success_message= 'No se han ingresado Datos iniciales!.'
+			flash(success_message, 'danger')
+			
+			return redirect( url_for('dosis_ini'))
+		else:
+			listafinal=[]
+			d=1
+			a=0
+			for i in lista3:
+				listadosis=[]
+				listadosis.append(str(d))
+				c=0
+				while c < 3:
+					listadosis.append(lista3[a][c])
+					c = c+1
+				listafinal.append(listadosis)
+				a=a+1
+				d=d+1
 
-	
-		now= dt.datetime.now()
-		hour=now.replace(year=now.year, month=now.month, day=now.day)
-		fecha= hour.strftime("%Y-%m-%d")
-		archivo=os.path.abspath( os.path.join("data",fecha+'-DosisPET.csv'))
-		csv=open(archivo,'w')
-		titulo="Paciente,Dosis,Hora,mL\n"
-		csv.write(titulo)
-		print (listafinal)
-		s=0
-		for linea in listafinal:
-			pcte,dosis,hora,ml=str(listafinal[s][0]),str(listafinal[s][1]),str(listafinal[s][2]),str(listafinal[s][3]),
-			filas=pcte+","+dosis+","+hora+","+ml+"\n"
-			csv.write(filas)
-			s=s+1
-		csv.close()
+		
+			now= dt.datetime.now()
+			hour=now.replace(year=now.year, month=now.month, day=now.day)
+			fecha= hour.strftime("%Y-%m-%d")
+			archivo=os.path.abspath( os.path.join("data",fecha+'-DosisPET.csv'))
+			csv=open(archivo,'w')
+			titulo="Paciente,Dosis,Hora,mL\n"
+			csv.write(titulo)
+			print (listafinal)
+			s=0
+			for linea in listafinal:
+				pcte,dosis,hora,ml=str(listafinal[s][0]),str(listafinal[s][1]),str(listafinal[s][2]),str(listafinal[s][3]),
+				filas=pcte+","+dosis+","+hora+","+ml+"\n"
+				csv.write(filas)
+				s=s+1
+			csv.close()
 
-		comment_formmail = forms.CommentFormmail(request.form)
-		if request.method == 'POST' and comment_formmail.validate():
-			maildest=comment_formmail.mail.data
-			msg= Message('Envio de Jornada PET', sender = app.config['MAIL_USERNAME'],
-												recipients = [maildest] )
-			msg.html = '<b> Se adjunta la lista de Jornada PET Clinica Reñaca</b><br></br>'
-			with app.open_resource(os.path.join("data",fecha+'-DosisPET.csv')) as DosisPET:
-				msg.attach(fecha+'-DosisPET.csv', fecha+'-DosisPET/csv', DosisPET.read())
-			mail.send(msg)
-			success_message= 'Mail enviado con exito.'
-			flash(success_message, 'success')
-			return redirect (url_for('envio'))
+			comment_formmail = forms.CommentFormmail(request.form)
+			if request.method == 'POST' and comment_formmail.validate():
+				maildest=comment_formmail.mail.data
+				msg= Message('Envio de Jornada PET', sender = app.config['MAIL_USERNAME'],
+													recipients = [maildest] )
+				msg.html = '<b> Se adjunta la lista de Jornada PET Clinica Reñaca</b><br></br>'
+				with app.open_resource(os.path.join("data",fecha+'-DosisPET.csv')) as DosisPET:
+					msg.attach(fecha+'-DosisPET.csv', fecha+'-DosisPET/csv', DosisPET.read())
+				mail.send(msg)
+				success_message= 'Mail enviado con exito.'
+				flash(success_message, 'success')
+				return redirect (url_for('resumen'))
 
 			
 		return render_template('envio.html', form= comment_formmail)

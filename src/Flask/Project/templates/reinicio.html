@@ -1,4 +1,4 @@
-{% extends 'base/baseini.html'%}
+{% extends 'base/base.html'%}
 
 {% block title %} {{ title }} {% endblock %}
 
@@ -12,10 +12,10 @@
 	<br>
 	<br>
 
-<form action='/login' method="GET">
+<form action='/reinicio2' method="GET">
 	<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 
-    <button type="submit" class="btn btn-warning">Iniciar Sesion</button>
+    <button type="submit" class="btn btn-warning">Reiniciar Todos los datos</button>
 </form>
 </center>
 {% endblock %}
