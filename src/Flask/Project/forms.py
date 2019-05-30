@@ -20,12 +20,23 @@ def check_decimal(form, field):
 	if len(b[-1])> 2:
 		raise validators.ValidationError('No debe ingresar mas de dos decimales.')
 
+def num_positive(form, field):
+	a=field.data
+	if a <= 0:
+		raise validators.ValidationError('No debe ingresar valores menores a Cero.')
+
+def num_max(form, field):
+	a=field.data
+	if a > 1000000:
+		raise validators.ValidationError('No debe ingresar valores mayores a 1000000.')
 
 class CommentForm(Form):
 	dosis= FloatField('Dosis Inicial en mCi:',
 		[ 
 			validators.Required(message = 'Ingresar dosis Valida.'),
-			check_decimal
+			check_decimal,
+			num_positive,
+			num_max
 
 		]
 		) 
@@ -35,7 +46,9 @@ class CommentForm(Form):
 	ml= FloatField('Milimetros(mL) Totales',
 		[ 
 			validators.Required(message = 'Ingresar mL Valido.'),
-			check_decimal
+			check_decimal,
+			num_positive,
+			num_max
 
 		]
 		) 
@@ -44,7 +57,9 @@ class CommentFormnew(Form):
 	dosis= FloatField('Ingresar Dosis en mCi:',
 		[ 
 			validators.Required(message = 'Ingresar dosis Valida.'),
-			check_decimal
+			check_decimal,
+			num_positive,
+			num_max
 
 		]
 		) 
@@ -54,7 +69,9 @@ class CommentFormnew(Form):
 	ml= FloatField('Milimetros(mL) Totales',
 		[ 
 			validators.Required(message = 'Ingresar mL Valido.'),
-			check_decimal
+			check_decimal,
+			num_positive,
+			num_max
 
 		]
 		) 
@@ -71,7 +88,9 @@ class CommentForm3(Form):
 	dosis= FloatField('Dosis Requerida en mCi:',
 		[ 
 			validators.Required(message = 'Ingresar dosis Valida.'),
-			check_decimal
+			check_decimal,
+			num_positive,
+			num_max
 
 		]
 		) 

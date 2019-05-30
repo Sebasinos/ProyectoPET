@@ -300,6 +300,7 @@ def dosis_ini():
 				print (min)
 				success_message= 'Datos Ingresados con Exito!'
 				flash(success_message, 'success')
+				return redirect (url_for('real_time'))
 
 
 			title = "PET Manager"
@@ -339,6 +340,7 @@ def dosis_new():
 
 				success_message= 'Datos Ingresados con Exito!.'
 				flash(success_message, 'success')
+				return redirect( url_for('real_time'))
 
 
 			title = "PET Manager"
