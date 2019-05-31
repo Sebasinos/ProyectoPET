@@ -20,8 +20,8 @@ from flask_mail import Mail
 from flask_mail import Message
 
 
-lista=[]
-lista2=[]
+lista=[] #Dosis Global
+lista2=[] #Dosis Pacientes
 lista3=[]
 listadosis = []
 listafinal =[]
@@ -95,7 +95,7 @@ def ml_last(lista):
 def input_data(lista,new_dose,new_hour,new_ml):
     act_dose=dose_last(lista)
     act_ml=ml_last(lista)
-    act_hour=time_last(lista)
+    act_hour=time_last(lista) #Datos actuales
     new_dose=new_dose
     new_hour=new_hour
     new_ml=new_ml
@@ -512,6 +512,46 @@ def dose_ml():
 		success_message= 'Debes iniciar Sesion.'
 		flash(success_message, 'warning')
 		return redirect (url_for('login'))
+
+@app.route('/dosis_mod' , methods = ['GET','POST'])
+def dosis_mod():
+	if 'username' in session:
+		if lista2 == []:
+			success_message= 'No se han ingresado Datos de Dosificacion!.'
+			flash(success_message, 'danger')
+			
+			return redirect( url_for('dosis_new'))
+		else:
+			comment_form = forms.CommentFormod(request.form)
+
+			if request.method == 'POST' and comment_form.validate():
+				num=comment_form.num.data
+				dose=comment_form.dosis.data
+				hour=comment_form.Hora.data
+				ml=comment_form.ml.data
+				now= dt.datetime.now()
+				hour=hour.replace(year=now.year, month=now.month, day=now.day)
+				hour = hour.strftime("%H:%M")
+				num= num-1
+				if num > len(lista3):
+					success_message= 'Dosificacion Paciente no valida.'
+					flash(success_message, 'danger')
+					return redirect( url_for('dosis_mod'))
+				else:
+					lista3[num]=(dose,hour,ml)
+
+
+				success_message= 'Datos Modificados con Exito!.'
+				flash(success_message, 'success')
+				return redirect( url_for('resumen'))
+
+
+			title = "PET Manager"
+			return render_template('dosis_mod.html', title=title, form = comment_form)
+	else:
+		success_message= 'Debes iniciar Sesion.'
+		flash(success_message, 'warning')
+		return redirect (url_for('login'))	
 
 
 if __name__ == '__main__':

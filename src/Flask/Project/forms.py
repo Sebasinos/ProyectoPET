@@ -3,7 +3,7 @@ import math
 import datetime as dt
 import time
 from wtforms import Form
-from wtforms import StringField, TextField, FloatField, DateTimeField, PasswordField, HiddenField
+from wtforms import StringField, TextField, FloatField, DateTimeField, PasswordField, HiddenField, IntegerField
 from wtforms.fields.html5 import EmailField
 from models import User
 from wtforms import validators
@@ -52,6 +52,34 @@ class CommentForm(Form):
 
 		]
 		) 
+class CommentFormod(Form):
+	num= IntegerField('Ingresar numero de dosificacion a modificar(Paciente)',
+		[ 
+			validators.Required(message = 'Ingresar numero valido.'),
+			num_positive,
+
+		])
+	dosis= FloatField('Dosis a modificar en mCi:',
+		[ 
+			validators.Required(message = 'Ingresar dosis Valida.'),
+			check_decimal,
+			num_positive,
+			num_max
+
+		]
+		) 
+	Hora= DateTimeField('Hora a modificar',format ="%H:%M", validators=[validators.Required(message='Ingresar Formato HH:MM')])
+
+
+	ml= FloatField('Milimetros(mL) Totales a modificar',
+		[ 
+			validators.Required(message = 'Ingresar mL Valido.'),
+			check_decimal,
+			num_positive,
+			num_max
+
+		]
+		)
 
 class CommentFormnew(Form):
 	dosis= FloatField('Ingresar Dosis en mCi:',
@@ -119,8 +147,7 @@ class CreateForm(Form):
 		username = field.data
 		user = User.query.filter_by(username = username).first()
 		if user is not None:
-			raise validators.ValidationError('El nombre de Usuario ya se encuentra registrado!.')
-			
+			raise validators.ValidationError('El nombre de Usuario ya se encuentra registrado!.')		
 
 
 
