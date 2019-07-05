@@ -9,16 +9,17 @@ _Carrera de Ingeniería en Computación e Informática - Advance 2019_
 ## Pre-requisitos 📋
 
 _Necesario para su instalación como minimo Windows 7 32 bits, con 500 MB de memoria y 4 GB de almacenamiento en el disco._
+_Web Browser_
 
 ## Instalación 🔧
 
-_Se puede ejecutar Scrip con Ide-consola Phyton 3.7 - Codigo Principal [PetManager](https://github.com/Sebasinos/ProyectoPET/blob/master/src/Programa_principal.py)_
+_Se puede ejecutar Scrip con Ide-consola Phyton 3.7 - Codigo Principal 0.4 [PetManager](https://github.com/Sebasinos/ProyectoPET/blob/master/src/Programa_principal.py)_ 
 
-_Se puede Instalar ultima versión lanzada - Instalador windows [PetManager](https://github.com/Sebasinos/ProyectoPET/releases/tag/V0.4)_
+_Se puede Instalar versión  - Instalador windows 0.4 [PetManager](https://github.com/Sebasinos/ProyectoPET/releases/tag/V0.4)_
 ```
 Seguir Instrucciones de instalador (aceptar licencia de uso).
 ```
-
+_Se puede Instalar ultima versión lanzada v0.6 - Cargando la Web-app en un localHost
 ## Documentación ⚙️
 
 ### Módulos
