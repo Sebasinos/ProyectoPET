@@ -25,6 +25,7 @@ lista2=[] #Dosis Pacientes
 lista3=[]
 listadosis = []
 listafinal =[]
+listahoraproystr=[]
 var=0
 #-----Calculator-------#
 Rf=float(109.771)
@@ -141,6 +142,7 @@ def page_not_found(e):
 
 @app.route('/login' , methods = ['GET','POST'])
 def login():
+	global username1
 	login_form = forms.LoginForm(request.form)
 	if request.method == 'POST' and login_form.validate():
 		username= login_form.username.data
@@ -237,12 +239,14 @@ def reinicio2():
 	global lista3
 	global listadosis
 	global listafinal
+	global listahoraproystr
 
 	lista=[]
 	lista2=[]
 	lista3=[]
 	listadosis = []
 	listafinal =[]
+	listahoraproystr=[]
 	success_message= 'Valores reiniciados.'
 	flash(success_message, 'success')
 
@@ -553,6 +557,74 @@ def dosis_mod():
 		flash(success_message, 'warning')
 		return redirect (url_for('login'))	
 
+
+@app.route('/ag_proy' , methods = ['GET','POST'])
+def ag_proy():
+	dosep=""
+	hourp=""
+	dosis=""
+	tr=""
+	hora=""
+	inicio1 =""
+	if 'username' in session:
+		if lista == []:
+			success_message= 'No se han ingresado Datos de Dosificacion!.'
+			flash(success_message, 'danger')
+			
+			return redirect( url_for('dosis_ini'))
+		else:
+			listahoraproystr=[]
+			listadosisproy=[]
+			comment_form = forms.CommentForm_ag2(request.form)
+
+			if request.method == 'POST' and comment_form.validate():
+				r=2
+				tr=comment_form.tr.data
+				dosis=comment_form.dosis.data
+				hora=comment_form.Hora.data
+				now= dt.datetime.now()
+				hour=hora.replace(year=now.year, month=now.month, day=now.day)
+				act_ini=dose_last(lista)
+				time=time_last(lista)
+				minutos=dif_min_proy(time,hour)
+				dosep=cal_decay(act_ini,minutos,Rf)
+				dosep=format(dosep,'.3f')
+				hourlista=hour.strftime("%H:%M")
+				ho= hour + timedelta(minutes=tr)
+				inicio1 = ho.strftime("%H:%M")
+				listahoraproystr=[]
+				listadosisproy=[]
+				listadosisproy.append(dosep)
+				grupo= (str(1),hourlista,inicio1)
+				listahoraproystr.append(grupo)
+				print(listahoraproystr)
+				while float(dosep) > float(dosis):
+					dosep= listadosisproy[-1]
+					dosep = float(dosep)-float(dosis)
+					dosep=format(dosep,'.3f')
+					p1= hour + timedelta(minutes=tr)
+					inicio = p1.strftime("%H:%M")
+					p1= p1 + timedelta(minutes=40)
+					p1 = p1 - timedelta(minutes=tr)
+					hourlista = p1.strftime("%H:%M")
+					tupla= (str(r),hourlista,inicio)
+					listahoraproystr.append(tupla)
+					dosep=cal_decay(dosep,40,Rf)
+					dosep=format(dosep,'.3f')
+					listadosisproy.append(dosep)
+					print (listahoraproystr)
+					r=r+1
+					hour = p1
+				dosep= str(dosep)
+				print (dosep)
+				return render_template('ag_proy_2.html', form= comment_form, listahoraproystr=listahoraproystr, dosisrestante=dosep, dosis=dosis)
+
+			return render_template('ag_proy.html', form= comment_form, listahoraproystr=listahoraproystr, dosisrestante=dosep, dosis=dosis)
+
+	else:
+		success_message= 'Debes iniciar Sesion.'
+		flash(success_message, 'warning')
+		return redirect (url_for('login'))	
 
 if __name__ == '__main__':
 	csrf.init_app(app)

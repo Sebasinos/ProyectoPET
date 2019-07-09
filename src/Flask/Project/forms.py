@@ -30,6 +30,12 @@ def num_max(form, field):
 	if a > 1000000:
 		raise validators.ValidationError('No debe ingresar valores mayores a 1000000.')
 
+def ag_max(form, field):
+	a=field.data
+	if (a > 10) or (a < 2) :
+		raise validators.ValidationError('Ingresar valor entre 2 y 10.')
+
+
 class CommentForm(Form):
 	dosis= FloatField('Dosis Inicial en mCi:',
 		[ 
@@ -80,6 +86,26 @@ class CommentFormod(Form):
 
 		]
 		)
+
+class CommentForm_ag2(Form):
+	dosis= FloatField('Ingresar dosis utilizada para proyección',
+		[ 
+			validators.Required(message = 'Ingresar dosis Valida.'),
+			check_decimal,
+			num_positive,
+			num_max
+
+		]
+		) 
+	Hora= DateTimeField('Ingresar hora de Primera administracion de dosis',format ="%H:%M", validators=[validators.Required(message='Ingresar Formato HH:MM')])
+
+
+	tr= IntegerField('Ingresar minutos de recirculacion',
+		[ 
+			validators.Required(message = 'Ingresar numero valido.'),
+			num_positive
+
+		])
 
 class CommentFormnew(Form):
 	dosis= FloatField('Ingresar Dosis en mCi:',

@@ -1,0 +1,25 @@
+{% extends 'base/base.html'%}
+
+{% block title %} {{ title }} {% endblock %}
+
+{% block content %}
+	{% if listahoraproystr %}
+			<br>
+			<div class="p-3 mb-2 bg-warning text-dark"><h5> Proyeccion Agenda </h5></div>
+			<br>
+			<br>
+			{% for item in listahoraproystr %}
+			<br>
+				<div class="p-3 mb-2 bg-warning text-dark"><h5>- Paciente {{item[0]}} </h5></div>
+				<br>
+				<p><a class="text-white"><li> Hora administracion Dosis: {{item[1]}}</li></a></p>
+				<p><a class="text-white"><li> Hora inicio examen: {{item[2]}}</li></a>
+				</p>
+				<p><a class="text-white"><li> Dosis: {{dosis}} mCi</li></a></p>
+			{% endfor %}
+			<p><a class="p-3 mb-2 bg-warning text-dark">Dosis Restante: {{dosisrestante}} mCi</a></p>
+
+	{% endif %}
+	<br>
+	<br>
+{% endblock %}
