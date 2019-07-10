@@ -97,10 +97,10 @@ class CommentForm_ag2(Form):
 
 		]
 		) 
-	Hora= DateTimeField('Ingresar hora de Primera administracion de dosis',format ="%H:%M", validators=[validators.Required(message='Ingresar Formato HH:MM')])
+	Hora= DateTimeField('Ingresar hora de primera administración de dosis',format ="%H:%M", validators=[validators.Required(message='Ingresar Formato HH:MM')])
 
 
-	tr= IntegerField('Ingresar minutos de recirculacion',
+	tr= IntegerField('Ingresar minutos de recirculación',
 		[ 
 			validators.Required(message = 'Ingresar numero valido.'),
 			num_positive
@@ -117,7 +117,7 @@ class CommentFormnew(Form):
 
 		]
 		) 
-	Hora= DateTimeField('Hora de medicion',format ="%H:%M", validators=[validators.Required(message='Ingresar Formato HH:MM')])
+	Hora= DateTimeField('Hora de medición',format ="%H:%M", validators=[validators.Required(message='Ingresar Formato HH:MM')])
 
 
 	ml= FloatField('Milimetros(mL) Totales',

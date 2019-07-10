@@ -5,10 +5,11 @@
 {% block content %}
 	{% if listadosis %}
 			<br>
+			<div class="p-3 mb-2 bg-warning text-dark"><h5> Resumen de dosificaciones administradas </h5></div>
 			<br>
 			{% for item in listadosis %}
 			<br>
-				<div class="p-3 mb-2 bg-warning text-dark"><h5>- Paciente {{item[0]}} </h5></div>
+				<div class="p-3 mb-2 bg-warning text-dark"><h5>- Dosificación {{item[0]}} </h5></div>
 				<br>
 				<p><a class="text-white"><li> Dosis:  {{item[1]}}</li></a></p>
 				<p><a class="text-white"><li> Hora:  {{item[2]}}</li></a></p>
