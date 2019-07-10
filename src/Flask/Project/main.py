@@ -15,7 +15,7 @@ import forms
 import json
 from config import DevelopmentConfig
 from models import db
-from models import User 
+from models import User , Lista
 from flask_mail import Mail
 from flask_mail import Message
 
@@ -149,6 +149,7 @@ def login():
 		password= login_form.password.data
 
 		user= User.query.filter_by(username = username).first()
+		userid= user.id
 		if user is not None and user.verify_password(password):
 			if username == 'sinostroza':
 				username1= 'TM Sebastian Inostroza'
@@ -172,6 +173,7 @@ def login():
 
 
 		session['username'] = login_form.username.data
+		session['id'] = userid
 
 
 	return render_template('login.html', form = login_form)
@@ -323,6 +325,9 @@ def dosis_ini():
 @app.route('/dosis_new' , methods = ['GET','POST'])
 def dosis_new():
 	if 'username' in session:
+		username = session['username']
+		user= User.query.filter_by(username = username).first()
+		userid= user.id
 		if lista == []:
 			success_message= 'No se han ingresado Datos iniciales!.'
 			flash(success_message, 'danger')
@@ -341,6 +346,9 @@ def dosis_new():
 				now= dt.datetime.now()
 				hour=hour.replace(year=now.year, month=now.month, day=now.day)
 				input_data(lista,dose,hour,ml)
+				tupla=Lista(dosis=dose, ml=ml, hora=hour, user_id=userid)
+				db.session.add(tupla)
+				db.session.commit()
 
 				success_message= 'Datos Ingresados con Exito!.'
 				flash(success_message, 'success')
