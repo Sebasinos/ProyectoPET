@@ -18,6 +18,8 @@ from models import db
 from models import User , Lista
 from flask_mail import Mail
 from flask_mail import Message
+import sched
+
 
 
 lista=[] #Dosis Global
@@ -364,32 +366,38 @@ def dosis_new():
 
 @app.route('/real_time')
 def real_time():
-	if 'username' in session:
-		comment_form = forms.CommentForm(request.form)
-		if lista == []:
-			success_message= 'No se han ingresado Datos iniciales!.'
-			flash(success_message, 'danger')
+	def f():
+		if 'username' in session:
+			comment_form = forms.CommentForm(request.form)
+			if lista == []:
+				success_message= 'No se han ingresado Datos iniciales!.'
+				flash(success_message, 'danger')
 
-			return redirect( url_for('dosis_ini'))
+				return redirect( url_for('dosis_ini'))
+			else:
+				act_ini=dose_last(lista)
+				time=time_last(lista)
+				minutos=dif_min(time)
+				dose_now=cal_decay(act_ini,minutos,Rf)
+				dose_now= float(dose_now)-float((float(dose_now) * fac_cor_fluor))
+				dose_now=format(dose_now, '.2f')
+				print (dose_now)
+				dose = dose_now
+				mlrest=ml_last(lista)
+				pctes=len(lista2)
+
+				return render_template('real_time.html',dose=dose, mlrest=mlrest,pctes=pctes)
+			
 		else:
-			act_ini=dose_last(lista)
-			time=time_last(lista)
-			minutos=dif_min(time)
-			dose_now=cal_decay(act_ini,minutos,Rf)
-			dose_now= float(dose_now)-float((float(dose_now) * fac_cor_fluor))
-			dose_now=format(dose_now, '.2f')
-			print (dose_now)
-			dose = dose_now
-			mlrest=ml_last(lista)
-			pctes=len(lista2)
+			success_message= 'Debes iniciar Sesion.'
+			flash(success_message, 'warning')
+			return redirect (url_for('login'))
 
-
-
-			return render_template('real_time.html',dose=dose, mlrest=mlrest,pctes=pctes)
-	else:
-		success_message= 'Debes iniciar Sesion.'
-		flash(success_message, 'warning')
-		return redirect (url_for('login'))
+	scheduler = Scheduler()
+	scheduler.add(10, 0, f)
+	while True:
+		scheduler.run()
+	
 
 
 
