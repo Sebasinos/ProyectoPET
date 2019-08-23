@@ -7,6 +7,8 @@ from wtforms import StringField, TextField, FloatField, DateTimeField, PasswordF
 from wtforms.fields.html5 import EmailField
 from models import User
 from wtforms import validators
+from flask_wtf import FlaskForm
+
 
 def length_honeypot(form, field):
 	if len(field.data) >0:
@@ -36,7 +38,7 @@ def ag_max(form, field):
 		raise validators.ValidationError('Ingresar valor entre 2 y 10.')
 
 
-class CommentForm(Form):
+class CommentForm(FlaskForm):
 	dosis= FloatField('Dosis Inicial en mCi:',
 		[ 
 			validators.Required(message = 'Ingresar dosis Valida.'),
@@ -58,7 +60,7 @@ class CommentForm(Form):
 
 		]
 		) 
-class CommentFormod(Form):
+class CommentFormod(FlaskForm):
 	num= IntegerField('Ingresar numero de dosificacion a modificar(Paciente)',
 		[ 
 			validators.Required(message = 'Ingresar numero valido.'),
@@ -87,7 +89,7 @@ class CommentFormod(Form):
 		]
 		)
 
-class CommentForm_ag2(Form):
+class CommentForm_ag2(FlaskForm):
 	dosis= FloatField('Ingresar dosis utilizada para proyección',
 		[ 
 			validators.Required(message = 'Ingresar dosis Valida.'),
@@ -107,7 +109,7 @@ class CommentForm_ag2(Form):
 
 		])
 
-class CommentFormnew(Form):
+class CommentFormnew(FlaskForm):
 	dosis= FloatField('Ingresar Dosis en mCi:',
 		[ 
 			validators.Required(message = 'Ingresar dosis Valida.'),
@@ -131,14 +133,14 @@ class CommentFormnew(Form):
 		) 
 
 
-class CommentForm2(Form):
+class CommentForm2(FlaskForm):
 	Hora= DateTimeField('Hora de Proyección',format ="%H:%M", validators=[validators.Required(message='Ingresar Formato HH:MM')])
 
 
-class CommentFormmail(Form):
+class CommentFormmail(FlaskForm):
 	mail= EmailField('Ingrese Mail de destino', validators=[validators.Required(message='Ingresar e-Mail Valido')])
 
-class CommentForm3(Form):
+class CommentForm3(FlaskForm):
 	dosis= FloatField('Dosis Requerida en mCi:',
 		[ 
 			validators.Required(message = 'Ingresar dosis Valida.'),
@@ -149,7 +151,7 @@ class CommentForm3(Form):
 		]
 		) 
 
-class LoginForm(Form):
+class LoginForm(FlaskForm):
 	username= StringField('Username',
 		[
 			validators.Required(message= 'El Username es Requerido.'),
@@ -159,7 +161,7 @@ class LoginForm(Form):
 	password = PasswordField('Password', [validators.Required(message='El password es Requerido'),
 		])
 
-class CreateForm(Form):
+class CreateForm(FlaskForm):
 	username= StringField('Username',
 		[
 			validators.Required(message= 'El Username es Requerido.'),
@@ -174,6 +176,7 @@ class CreateForm(Form):
 		user = User.query.filter_by(username = username).first()
 		if user is not None:
 			raise validators.ValidationError('El nombre de Usuario ya se encuentra registrado!.')		
+
 
 
 

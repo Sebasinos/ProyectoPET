@@ -15,9 +15,13 @@ import forms
 import json
 from config import DevelopmentConfig
 from models import db
-from models import User 
+from models import User , Lista, Lista_ini, Lista_flot, Lista_day, Lista_str
 from flask_mail import Mail
 from flask_mail import Message
+from sqlalchemy import desc
+from flask_wtf import FlaskForm
+from flask_wtf.csrf import CSRFProtect
+
 
 
 lista=[] #Dosis Global
@@ -31,15 +35,18 @@ var=0
 Rf=float(109.771)
 fac_cor_fluor= float(0.0063)
 
-def dose_now(lista):
-    act_ini=dose_last(lista)
-    time=time_last(lista)
-    minutos=dif_min(time)
-    dose_now=cal_decay(act_ini,minutos,Rf)
-    dose_now= float(dose_now)-float((float(dose_now) * float(0.0063)))
-    dose_now=format(dose_now, '.2f')
-    print (dose_now)
-    return dose_now
+def dose_now():
+	ultimoregistro = Lista_flot.query.order_by(desc(Lista_flot.dosis)).first()
+	dosislast = ultimoregistro.dosis
+	hourlast = ultimoregistro.hora
+	act_ini=dosislast
+	time=hourlast
+	minutos=dif_min(time)
+	dose_now=cal_decay(act_ini,minutos,Rf)
+	dose_now= float(dose_now)-float((float(dose_now) * fac_cor_fluor))
+	dose_now=format(dose_now, '.2f')
+	print (dose_now)
+	return dose_now
 
 
 def dif_min(time_x):
@@ -73,65 +80,34 @@ def real_time(lista, Rf):
 	dose = dose_now
 
 
-def dose_last(lista):
-    lista=lista[-1]
-    dose_last=lista[0]
-    return dose_last
-
-#FUNCION ultimo tiempo de la lista
-
-def time_last(lista):
-    lista=lista[-1]
-    time_last=lista[1]
-    return time_last
-
-#FUNCION ultimo tiempo de la lista
-
-def ml_last(lista):
-    lista=lista[-1]
-    ml_last=lista[2]
-    return ml_last
-
 #FUNCION INGRESO DE DATO ACTUALIZADO
-def input_data(lista,new_dose,new_hour,new_ml):
-    act_dose=dose_last(lista)
-    act_ml=ml_last(lista)
-    act_hour=time_last(lista) #Datos actuales
-    new_dose=new_dose
-    new_hour=new_hour
-    new_ml=new_ml
-    minutos=dif_min_proy(act_hour,new_hour)
-    doserefresh=cal_decay(act_dose,minutos,Rf)
-    doserefresh=format(float(doserefresh)-float(new_dose),'.3f')
-    doserefresh=float(doserefresh)-float((float(doserefresh) *fac_cor_fluor))
-    mlrefresh= format((float(ml_last(lista)) - float(new_ml)),'.2f')
-    tupla=(new_dose,new_hour,new_ml)
-    lista2.append(tupla)
-    tupla_act=(str(doserefresh), new_hour, str(mlrefresh))
-    lista.append(tupla_act)
-    hour = new_hour.strftime("%H:%M")
-    tupla1=(new_dose,hour,new_ml)
-    lista3.append(tupla1)
-    print ("Datos ingresados con exito")
-
-def input_data_mod(dose,hour,ml):
-    act_dose=dose_last(lista)
-    act_ml=ml_last(lista)
-    act_hour=time_last(lista)
-    new_dose=dose
-    new_hour=hour
-    new_ml=ml
-    minutos=dif_min_proy(act_hour,new_hour)
-    doserefresh=cal_decay(act_dose,minutos)
-    doserefresh=format(float(doserefresh)-float(new_dose),'.3f')
-    mlrefresh= format((float(ml_last(lista)) - float(new_ml)),'.2f')
-    tupla_act=(str(doserefresh), new_hour, str(mlrefresh))
-    lista.append(tupla_act)
-    print ("Datos ingresados con exito")
+def input_data(new_dose,new_hour,new_ml):
+	ultimoregistro = Lista_flot.query.order_by(desc(Lista_flot.dosis)).first()
+	act_dose = ultimoregistro.dosis #Registro de lista flotante
+	act_hour = ultimoregistro.hora #Registro de lista flotante
+	act_ml = ultimoregistro.ml #Registro de lista flotante
+	new_dose=new_dose
+	new_hour=new_hour
+	new_ml=new_ml
+	minutos=dif_min_proy(act_hour,new_hour)
+	doserefresh=cal_decay(act_dose,minutos,Rf)
+	doserefresh=format(float(doserefresh)-float(new_dose),'.3f')
+	doserefresh=float(doserefresh)-float((float(doserefresh) *fac_cor_fluor))
+	mlrefresh= format((float(act_ml) - float(new_ml)),'.2f')
+	ultimoregistro.dosis=doserefresh
+	ultimoregistro.hora=new_hour
+	ultimoregistro.ml=mlrefresh
+	db.session.add(ultimoregistro)
+	db.session.commit()
+	hour = new_hour.strftime("%H:%M")
+	tupla1=Lista_str(dosis=str(new_dose),hora=str(hour),ml=str(new_ml))
+	db.session.add(tupla1)
+	db.session.commit()
+	print ("Datos ingresados con exito")
 
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
-csrf= CsrfProtect()
+csrf= CSRFProtect()
 mail = Mail()
 
 
@@ -149,6 +125,7 @@ def login():
 		password= login_form.password.data
 
 		user= User.query.filter_by(username = username).first()
+		userid= user.id
 		if user is not None and user.verify_password(password):
 			if username == 'sinostroza':
 				username1= 'TM Sebastian Inostroza'
@@ -158,6 +135,8 @@ def login():
 				username1= 'TM Daniela Daza'
 			elif username == 'jpereza':
 				username1= 'TM Jose Perez'	
+			elif username == 'adminpet':
+				username1= 'TM Administrador'	
 
 			success_message = 'Bienvenido {}'.format(username1)
 			flash(success_message, 'success')
@@ -172,6 +151,7 @@ def login():
 
 
 		session['username'] = login_form.username.data
+		session['id'] = userid
 
 
 	return render_template('login.html', form = login_form)
@@ -206,7 +186,7 @@ def index():
 		success_message = 'Ya estas con una sesion activa'	
 		flash(success_message, 'info')
 
-		return render_template('index.html')
+		return render_template('index2.html')
 	else:
 
 		return render_template('index.html')
@@ -223,8 +203,8 @@ def index2():
 
 @app.route('/reinicio')
 def reinicio():
-	global lista
-	if lista == []:
+	results = Lista_flot.query.all()
+	if results == []:
 		success_message= 'No se han ingresado Datos iniciales!.'
 		flash(success_message, 'danger')
 		return redirect( url_for('dosis_ini'))
@@ -234,19 +214,17 @@ def reinicio():
 
 @app.route('/reinicio2')
 def reinicio2():
-	global lista
-	global lista2
-	global lista3
-	global listadosis
-	global listafinal
-	global listahoraproystr
+	Lista_flot.query.delete()
+	Lista_day.query.delete()
+	Lista_str.query.delete()
+	db.session.commit()
+	db.engine.execute("ALTER TABLE Lista_flot AUTO_INCREMENT = 1")
+	db.engine.execute("ALTER TABLE Lista_day AUTO_INCREMENT = 1")
+	db.engine.execute("ALTER TABLE Lista_str AUTO_INCREMENT = 1")
+	db.session.commit()
 
-	lista=[]
-	lista2=[]
-	lista3=[]
-	listadosis = []
-	listafinal =[]
-	listahoraproystr=[]
+
+
 	success_message= 'Valores reiniciados.'
 	flash(success_message, 'success')
 
@@ -255,19 +233,26 @@ def reinicio2():
 
 @app.route('/create', methods = ['GET','POST'])
 def create():
-	create_form = forms.CreateForm(request.form)
-	if request.method == 'POST' and create_form.validate():
-		user= User( create_form.username.data,
-				    create_form.password.data )
+	if session['username'] == 'adminpet':
+
+		create_form = forms.CreateForm(request.form)
+		if request.method == 'POST' and create_form.validate():
+			user= User( create_form.username.data,
+					    create_form.password.data )
 
 
-		db.session.add(user)
-		db.session.commit()
+			db.session.add(user)
+			db.session.commit()
 
-		success_message = 'Usuario Registrado correctamente en la Base de datos'	
-		flash(success_message, 'success')
+			success_message = 'Usuario Registrado correctamente en la Base de datos'	
+			flash(success_message, 'success')
 
-	return render_template('create.html', form = create_form)
+		return render_template('create.html', form = create_form)
+	else:
+		success_message = 'No posee permisos para esta seccion'
+		flash(success_message, 'danger')
+		return render_template('real_time.html')
+
 
 
 @app.route('/logout')
@@ -286,8 +271,12 @@ def logout():
 def dosis_ini():
 	if 'username' in session:
 		comment_form = forms.CommentForm(request.form)
+		username = session['username']
+		results = Lista_flot.query.all()
+		user= User.query.filter_by(username = username).first()
+		userid= user.id
 
-		if lista == []:
+		if results == []:
 			if request.method == 'POST' and comment_form.validate():
 				print (comment_form.dosis.data)
 				print (comment_form.Hora.data)
@@ -299,6 +288,12 @@ def dosis_ini():
 				hour=hour.replace(year=now.year, month=now.month, day=now.day)
 				tupla=(dose,hour,ml)
 				lista.append(tupla)
+				tupla=Lista_ini(dosis=dose, ml=ml, hora=hour, user_id=userid)
+				db.session.add(tupla)
+				db.session.commit()
+				tupla=Lista_flot(dosis=dose, ml=ml, hora=hour)
+				db.session.add(tupla)
+				db.session.commit()
 				print(tupla)
 				min= dif_min(hour)
 				print (min)
@@ -312,7 +307,7 @@ def dosis_ini():
 		else: 
 			success_message= 'Ya existen datos Iniciales'
 			flash(success_message, 'warning')
-			return redirect (url_for('resumen'))
+			return redirect (url_for('real_time'))
 
 	else:
 		success_message= 'Debes iniciar Sesion.'
@@ -323,7 +318,11 @@ def dosis_ini():
 @app.route('/dosis_new' , methods = ['GET','POST'])
 def dosis_new():
 	if 'username' in session:
-		if lista == []:
+		username = session['username']
+		user= User.query.filter_by(username = username).first()
+		userid= user.id
+		results = Lista_flot.query.all()
+		if results == []:
 			success_message= 'No se han ingresado Datos iniciales!.'
 			flash(success_message, 'danger')
 			
@@ -340,7 +339,13 @@ def dosis_new():
 				ml=comment_form.ml.data
 				now= dt.datetime.now()
 				hour=hour.replace(year=now.year, month=now.month, day=now.day)
-				input_data(lista,dose,hour,ml)
+				input_data(dose,hour,ml)
+				tupla=Lista(dosis=dose, ml=ml, hora=hour, user_id=userid)
+				db.session.add(tupla)
+				db.session.commit()
+				tupla=Lista_day(dosis=dose, ml=ml, hora=hour)
+				db.session.add(tupla)
+				db.session.commit()
 
 				success_message= 'Datos Ingresados con Exito!.'
 				flash(success_message, 'success')
@@ -358,66 +363,61 @@ def dosis_new():
 def real_time():
 	if 'username' in session:
 		comment_form = forms.CommentForm(request.form)
-		if lista == []:
+		results = Lista_flot.query.all()
+		results2 = Lista_day.query.all()
+		if results == []:
 			success_message= 'No se han ingresado Datos iniciales!.'
 			flash(success_message, 'danger')
 
 			return redirect( url_for('dosis_ini'))
 		else:
-			act_ini=dose_last(lista)
-			time=time_last(lista)
-			minutos=dif_min(time)
-			dose_now=cal_decay(act_ini,minutos,Rf)
-			dose_now= float(dose_now)-float((float(dose_now) * fac_cor_fluor))
-			dose_now=format(dose_now, '.2f')
-			print (dose_now)
-			dose = dose_now
-			mlrest=ml_last(lista)
-			pctes=len(lista2)
-
-
+			ultimoregistro = Lista_flot.query.order_by(desc(Lista_flot.dosis)).first()
+			dosis = ultimoregistro.dosis
+			hour = ultimoregistro.hora
+			ml = ultimoregistro.ml
+			dose = dose_now()
+			mlrest=format(ml, '.2f')
+			pctes=len(results2)
 
 			return render_template('real_time.html',dose=dose, mlrest=mlrest,pctes=pctes)
+			
 	else:
 		success_message= 'Debes iniciar Sesion.'
 		flash(success_message, 'warning')
 		return redirect (url_for('login'))
 
 
-
 @app.route('/resumen')
 def resumen():
-	listafinal=[]
-	d=1
-	a=0
-	for i in lista3:
-		listadosis=[]
-		listadosis.append(str(d))
-		c=0
-		while c < 3:
-			listadosis.append(lista3[a][c])
-			c = c+1
-
-		listafinal.append(listadosis)
-		a=a+1                      
-		d=d+1
-
-	print(listafinal)
-
-	return render_template('resumen.html',listadosis=listafinal)
-
-@app.route('/envio', methods = ['GET','POST'])
-def envio():
 	if 'username' in session:
-		if lista == []:
-			success_message= 'No se han ingresado Datos iniciales!.'
+		results = Lista_str.query.all()
+		if results == []:
+			success_message= 'No se han ingresado datos de dosificacion!.'
 			flash(success_message, 'danger')
 			
-			return redirect( url_for('dosis_ini'))
+			return redirect( url_for('dosis_new'))
 		else:
-			listafinal=[]
+			lista3 =[]
+			cant=len(results)
+			f= 0
+			primerregistrol3 = Lista_str.query.first()
+			print (primerregistrol3)
+			idini =primerregistrol3.id
+			while f < cant:
+				update_this= Lista_str.query.filter_by(id=idini).first()
+				dose = update_this.dosis
+				hour= update_this.hora
+				ml = update_this.ml
+				tupla=(dose,hour,ml)
+				lista3.append(tupla)
+				f=f+1
+				idini= idini+1
+				print (lista3)
+
+
 			d=1
 			a=0
+			listafinal=[]
 			for i in lista3:
 				listadosis=[]
 				listadosis.append(str(d))
@@ -425,8 +425,62 @@ def envio():
 				while c < 3:
 					listadosis.append(lista3[a][c])
 					c = c+1
+
 				listafinal.append(listadosis)
-				a=a+1
+				a=a+1                      
+				d=d+1
+
+			print(listafinal)
+
+			return render_template('resumen.html',listadosis=listafinal)
+	else:
+		success_message= 'Debes iniciar Sesion.'
+		flash(success_message, 'warning')
+		return redirect (url_for('login'))
+
+
+
+@app.route('/envio', methods = ['GET','POST'])
+def envio():
+	if 'username' in session:
+		results = Lista_str.query.all()
+		if results == []:
+			success_message= 'No se han ingresado Datos iniciales!.'
+			flash(success_message, 'danger')
+			
+			return redirect( url_for('dosis_ini'))
+		else:
+			lista3 =[]
+			cant=len(results)
+			f= 0
+			primerregistrol3 = Lista_str.query.first()
+			print (primerregistrol3)
+			idini =primerregistrol3.id
+			while f < cant:
+				update_this= Lista_str.query.filter_by(id=idini).first()
+				dose = update_this.dosis
+				hour= update_this.hora
+				ml = update_this.ml
+				tupla=(dose,hour,ml)
+				lista3.append(tupla)
+				f=f+1
+				idini= idini+1
+				print (lista3)
+
+
+			d=1
+			a=0
+			listafinal=[]
+			for i in lista3:
+				listadosis=[]
+				listadosis.append(str(d))
+				c=0
+				while c < 3:
+					listadosis.append(lista3[a][c])
+					c = c+1
+
+				listafinal.append(listadosis)
+				a=a+1                      
 				d=d+1
 
 		
@@ -461,11 +515,16 @@ def envio():
 
 			
 		return render_template('envio.html', form= comment_formmail)
+	else:
+		success_message= 'Debes iniciar Sesion.'
+		flash(success_message, 'warning')
+		return redirect (url_for('login'))
 
 @app.route('/dose_proy' , methods = ['GET','POST'])
 def dose_proy():
 	if 'username' in session:
-		if lista == []:
+		results = Lista_flot.query.all()
+		if results == []:
 			success_message= 'No se han ingresado Datos iniciales!.'
 			flash(success_message, 'danger')
 			
@@ -478,9 +537,9 @@ def dose_proy():
 				hour=comment_form2.Hora.data
 				now= dt.datetime.now()
 				hour=hour.replace(year=now.year, month=now.month, day=now.day)
-				print(hour)
-				act_ini=dose_last(lista)
-				time=time_last(lista)
+				ultimoregistro = Lista_flot.query.order_by(desc(Lista_flot.dosis)).first()
+				act_ini = ultimoregistro.dosis
+				time = ultimoregistro.hora
 				minutos=dif_min_proy(time,hour)
 				dose=cal_decay(act_ini,minutos,Rf)
 				dose=format(dose,'.3f')
@@ -495,7 +554,8 @@ def dose_proy():
 @app.route('/dose_ml' , methods = ['GET','POST'])
 def dose_ml():
 	if 'username' in session:
-		if lista == []:
+		results = Lista_flot.query.all()
+		if results == []:
 			success_message= 'No se han ingresado Datos iniciales!.'
 			flash(success_message, 'danger')
 			
@@ -506,8 +566,10 @@ def dose_ml():
 			comment_form3 = forms.CommentForm3(request.form)
 			if request.method == 'POST' and comment_form3.validate():
 				dose_req=comment_form3.dosis.data
-				dose_act=float(dose_now(lista))
-				ml_act=float(ml_last(lista))
+				dose_act=float(dose_now())
+				ultimoregistro = Lista_flot.query.order_by(desc(Lista_flot.dosis)).first()
+				ml_last = ultimoregistro.ml
+				ml_act=float(ml_last)
 				ml= (dose_req*ml_act)/dose_act
 				ml= format(ml,'.2f')
 
@@ -520,7 +582,8 @@ def dose_ml():
 @app.route('/dosis_mod' , methods = ['GET','POST'])
 def dosis_mod():
 	if 'username' in session:
-		if lista2 == []:
+		results = Lista_str.query.all()
+		if results == []:
 			success_message= 'No se han ingresado Datos de Dosificacion!.'
 			flash(success_message, 'danger')
 			
@@ -535,14 +598,24 @@ def dosis_mod():
 				ml=comment_form.ml.data
 				now= dt.datetime.now()
 				hour=hour.replace(year=now.year, month=now.month, day=now.day)
-				hour = hour.strftime("%H:%M")
-				num= num-1
-				if num > len(lista3):
+				hourstr = hour.strftime("%H:%M")
+				numlist= num-1
+				if numlist > len(results):
 					success_message= 'Dosificacion Paciente no valida.'
 					flash(success_message, 'danger')
 					return redirect( url_for('dosis_mod'))
 				else:
-					lista3[num]=(dose,hour,ml)
+
+					update_this= Lista_day.query.filter_by(id=num).first()
+					update_this.dosis= dose
+					update_this.hora= hour
+					update_this.ml= ml
+					db.session.commit()
+					update_this2= Lista_str.query.filter_by(id=num).first()
+					update_this2.dosis= str(dose)
+					update_this2.hora= hourstr
+					update_this2.ml= str(ml)
+					db.session.commit()
 
 
 				success_message= 'Datos Modificados con Exito!.'
@@ -567,7 +640,8 @@ def ag_proy():
 	hora=""
 	inicio1 =""
 	if 'username' in session:
-		if lista == []:
+		results = Lista_flot.query.all()
+		if results == []:
 			success_message= 'No se han ingresado Datos de Dosificacion!.'
 			flash(success_message, 'danger')
 			
@@ -584,39 +658,62 @@ def ag_proy():
 				hora=comment_form.Hora.data
 				now= dt.datetime.now()
 				hour=hora.replace(year=now.year, month=now.month, day=now.day)
-				act_ini=dose_last(lista)
-				time=time_last(lista)
-				minutos=dif_min_proy(time,hour)
+				ultimoregistro = Lista_flot.query.order_by(desc(Lista_flot.dosis)).first()
+				act_ini = ultimoregistro.dosis
+				time = ultimoregistro.hora
+				minutos=dif_min_proy(time,hour) #time = ultima hora decay / hour = tiempo de inyeccion
 				dosep=cal_decay(act_ini,minutos,Rf)
 				dosep=format(dosep,'.3f')
-				hourlista=hour.strftime("%H:%M")
-				ho= hour + timedelta(minutes=tr)
-				inicio1 = ho.strftime("%H:%M")
-				listahoraproystr=[]
-				listadosisproy=[]
-				listadosisproy.append(dosep)
-				grupo= (str(1),hourlista,inicio1)
-				listahoraproystr.append(grupo)
-				print(listahoraproystr)
-				while float(dosep) > float(dosis):
-					dosep= listadosisproy[-1]
-					dosep = float(dosep)-float(dosis)
-					dosep=format(dosep,'.3f')
-					p1= hour + timedelta(minutes=tr)
-					inicio = p1.strftime("%H:%M")
-					p1= p1 + timedelta(minutes=40)
-					p1 = p1 - timedelta(minutes=tr)
-					hourlista = p1.strftime("%H:%M")
-					tupla= (str(r),hourlista,inicio)
-					listahoraproystr.append(tupla)
-					dosep=cal_decay(dosep,40,Rf)
-					dosep=format(dosep,'.3f')
+				if float(dosep) < float(dosis) :
+					success_message= 'No hay sufuciente dosis para hacer proyeccion.'
+					flash(success_message, 'warning')
+					return redirect (url_for('real_time'))
+				
+				elif hour < now :
+					success_message= 'No se puede proyectar en una hora menor a la actual.'
+					flash(success_message, 'warning')
+					return redirect (url_for('real_time'))
+
+				else:
+					hourlista=hour.strftime("%H:%M")
+					ho= hour + timedelta(minutes=tr) #Hora inicio examen 1
+					inicio1 = ho.strftime("%H:%M")
+					listahoraproystr=[]
+					listadosisproy=[]
+					grupo= (str(1),hourlista,inicio1)
+					listahoraproystr.append(grupo)
+					print(listahoraproystr)
+					print(listadosisproy)
+					print(dosep)
+					dosep = float(dosep)-float(dosis) #dosis en la hora de inicio examen
 					listadosisproy.append(dosep)
-					print (listahoraproystr)
-					r=r+1
-					hour = p1
-				dosep= str(dosep)
-				print (dosep)
+					horainyec= hour
+
+					while float(dosep) > float(dosis):
+						print (dosep)
+						dosep= listadosisproy[-1]
+						p1= ho + timedelta(minutes=30) # p1 tiempo final de examen.
+						p2= p1 - timedelta(minutes=tr) # p2 tiempo de inyeccion del siguiente.
+						p3= p2 + timedelta(minutes=30) # tiempo final del siguiente
+						hourlista = p2.strftime("%H:%M")
+						inicio = p1.strftime("%H:%M")
+						tupla= (str(r),hourlista,inicio)
+						listahoraproystr.append(tupla)
+						minutos2=dif_min_proy(horainyec,p2)
+						dosep=cal_decay(dosep,minutos2,Rf)
+						if float(dosep) >= float(dosis) :
+							dosep = float(dosep)-float(dosis)
+							listadosisproy.append(dosep)
+						else:
+							print(dosep)
+						print (listahoraproystr)
+						print(dosep)
+						r=r+1
+						horainyec = p2
+						ho= p1
+					
+					dosep= str(format(dosep,'.3f'))
+					print (dosep)
 				return render_template('ag_proy_2.html', form= comment_form, listahoraproystr=listahoraproystr, dosisrestante=dosep, dosis=dosis)
 
 			return render_template('ag_proy.html', form= comment_form, listahoraproystr=listahoraproystr, dosisrestante=dosep, dosis=dosis)
