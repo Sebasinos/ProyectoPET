@@ -13,28 +13,54 @@ _Web Browser_
 
 ## Instalación 🔧
 
-_Se puede ejecutar Scrip con Ide-consola Phyton 3.7 - Codigo Principal 0.4 [PetManager](https://github.com/Sebasinos/ProyectoPET/blob/master/src/Programa_principal.py)_ 
+_Se puede ejecutar sin instalación accediendo a la direccion Web generada por el desarrollador_ 
 
 _Se puede Instalar versión  - Instalador windows 0.4 [PetManager](https://github.com/Sebasinos/ProyectoPET/releases/tag/V0.4)_
 ```
 Seguir Instrucciones de instalador (aceptar licencia de uso).
 ```
-_Se puede Instalar ultima versión lanzada v0.6 - Cargando la Web-app en un localHost
+_Se puede Instalar ultima versión lanzada v1.0 - Cargando la Web-app en un localHost
+```
+Seg deben instalar los requisitos de versiones y complementos necesarios:
+asn1crypto==0.24.0
+base==1.0.4
+blinker==1.4
+cffi==1.12.3
+Click==7.0
+config==0.4.2
+cryptography==2.7
+dominate==2.3.5
+Flask==1.0.3
+Flask-Bootstrap==3.3.7.1
+Flask-Cors==3.0.8
+Flask-Mail==0.9.1
+Flask-SQLAlchemy==2.4.0
+Flask-WTF==0.14.2
+gunicorn==19.9.0
+itsdangerous==1.1.0
+Jinja2==2.10.1
+MarkupSafe==1.1.1
+mysqlclient==1.4.2.post1
+props==0.0.3
+pycparser==2.19
+PyMySQL==0.9.3
+pyOpenSSL==19.0.0
+six==1.12.0
+SQLAlchemy==1.3.5
+visitor==0.1.3
+Werkzeug==0.15.4
+WTForms==2.2.1
+.
+```
 ## Documentación ⚙️
 
-### Módulos
+### Módulos de inicio - Los nuevos modulos se encuentran protegidos y no son accesibles de manera publica
 
 El proyecto PETManager está compuesto por los siguientes módulos funcionales
 
 [Modulo Calculadora de Decaimiento Radiactivo](https://github.com/Sebasinos/ProyectoPET/blob/master/docs/Doc_Codigo/Documentacion-cal_decay.md)
 
-[Modulo Diferencia entre dos horas](https://github.com/Sebasinos/ProyectoPET/blob/master/docs/Doc_Codigo/Documentacion-cal_dif_min_proy.md)
-
-[Modulo Limpiar Consola](https://github.com/Sebasinos/ProyectoPET/blob/master/docs/Doc_Codigo/Documentacion-clean.md)
-
 [Modulo Crear un archivo csv](https://github.com/Sebasinos/ProyectoPET/blob/master/docs/Doc_Codigo/Documentacion-create_file.md)
-
-[Modulo Diferencia entre hora actual y Especifica](https://github.com/Sebasinos/ProyectoPET/blob/master/docs/Doc_Codigo/Documentacion-dif_min.md)
 
 [Modulo Ingreso valores](https://github.com/Sebasinos/ProyectoPET/blob/master/docs/Doc_Codigo/Documentacion-dose_inicio.md)
 
@@ -42,17 +68,15 @@ El proyecto PETManager está compuesto por los siguientes módulos funcionales
 
 [Modulo Calculo Dosis en tiempo Real](https://github.com/Sebasinos/ProyectoPET/blob/master/docs/Doc_Codigo/Documentacion-dose_now.md)
 
-[Modulo Tomar ultimos Valores](https://github.com/Sebasinos/ProyectoPET/blob/master/docs/Doc_Codigo/Documentacion-dose_time_ml_last.md)
-
 [Modulo Crear lista ordenada de datos](https://github.com/Sebasinos/ProyectoPET/blob/master/docs/Doc_Codigo/Documentacion-gen_info.md)
 
 [Modulo Ingreso de nuevos datos](https://github.com/Sebasinos/ProyectoPET/blob/master/docs/Doc_Codigo/Documentacion-input_data.md)
 
 [Modulo Chequeo de datos](https://github.com/Sebasinos/ProyectoPET/blob/master/docs/Doc_Codigo/Documentacion-mod_check_input.md)
 
-[Modulo Modificar ultimo datos](https://github.com/Sebasinos/ProyectoPET/blob/master/docs/Doc_Codigo/Documentacion-mod_last_dat.md)
+[Modulo Modificar datos](https://github.com/Sebasinos/ProyectoPET/blob/master/docs/Doc_Codigo/Documentacion-mod_last_dat.md)
 
-### Ejemplo
+### Ejemplo version 0.4
 
 Ejemplo de un caso de uso: 
 
@@ -91,8 +115,9 @@ _Software_
 
   - Ambiente de desarrollo integrado/Compilador IDLE Python
   - Lenguaje de programación Python 3.7.1
-  - Gestor Grafico Qt5 Designer
+  - Gestor Web app Grafico Flask 
   - Gestor de metodología Trello
+  - Gestor de metodología Zenhub
   - Repositorio del proyecto Github
   - Sw creador instalador-Inno Setup
 
